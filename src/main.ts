@@ -1,3 +1,5 @@
+
+
 window.onload = () => {
     var canvas = document.getElementById('canvasEl') as HTMLCanvasElement;
     var context = canvas.getContext("2d");

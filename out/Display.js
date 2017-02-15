@@ -4,13 +4,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var DisplayObject = (function () {
-    function DisplayObject(x, y) {
+    function DisplayObject(x, y, width, height) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         this.transMat = MathUtil.Matrix.identity(3);
     }
     DisplayObject.prototype.draw = function () {
         this.context = Stage.getInstance().getContext();
+        var data = this.context.getImageData(0, 0, this.width, this.height);
+        data.data;
     };
     //rotateEular(degree: number) {    }
     DisplayObject.prototype.transform = function (x, y) {
@@ -22,9 +26,7 @@ var DisplayObject = (function () {
 var Rectangle = (function (_super) {
     __extends(Rectangle, _super);
     function Rectangle(x, y, width, height) {
-        _super.call(this, x, y);
-        this.width = width;
-        this.height = height;
+        _super.call(this, x, y, width, height);
     }
     Rectangle.prototype.draw = function () {
         _super.prototype.draw.call(this);
@@ -35,9 +37,10 @@ var Rectangle = (function (_super) {
 var ImageField = (function (_super) {
     __extends(ImageField, _super);
     function ImageField(x, y, img, width, height) {
-        _super.call(this, x, y);
-        this.image = new Image();
-        this.image.src = img;
+        var image = new Image();
+        image.src = img;
+        _super.call(this, x, y, image.width, image.height);
+        this.image = image;
     }
     ImageField.prototype.draw = function () {
         _super.prototype.draw.call(this);

@@ -1,42 +1,47 @@
 //var math = require('mathjs');
 interface IDrawable {
+    width: number;
+    height: number;
     context: CanvasRenderingContext2D;
-    transMat:number[][];
+    transMat: number[][];
     draw();
     //rotateEular(degree: number);
-    transform(x:number, y:number);
+    transform(x: number, y: number);
 }
 
 class DisplayObject implements IDrawable {
     x: number;
     y: number;
+    width: number;
+    height: number;
     context: CanvasRenderingContext2D;
-    transMat:number[][];
+    transMat: number[][];
 
     draw() {
         this.context = Stage.getInstance().getContext();
+
+        var data = this.context.getImageData(0, 0, this.width, this.height);
+        data.data
     }
 
     //rotateEular(degree: number) {    }
-    transform(x:number, y:number){
+    transform(x: number, y: number) {
         this.transMat[0][2] += x;
         this.transMat[1][2] += y;
     }
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, width: number, height: number) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         this.transMat = MathUtil.Matrix.identity(3);
     }
 }
 
 class Rectangle extends DisplayObject {
-    width: number;
-    height: number;
     constructor(x: number, y: number, width: number, height: number) {
-        super(x, y);
-        this.width = width;
-        this.height = height;
+        super(x, y, width, height);
     }
     draw() {
         super.draw();
@@ -48,9 +53,11 @@ class ImageField extends DisplayObject {
     image: HTMLImageElement;
 
     constructor(x: number, y: number, img: string, width?: number, height?: number) {
-        super(x, y);
-        this.image = new Image();
-        this.image.src = img;
+        var image = new Image();
+        image.src = img;
+        super(x, y, image.width, image.height);
+        this.image = image;
+
     }
 
     draw() {
