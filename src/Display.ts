@@ -1,20 +1,32 @@
+//var math = require('mathjs');
 interface IDrawable {
     context: CanvasRenderingContext2D;
+    transMat:number[][];
     draw();
+    //rotateEular(degree: number);
+    transform(x:number, y:number);
 }
 
 class DisplayObject implements IDrawable {
     x: number;
     y: number;
     context: CanvasRenderingContext2D;
+    transMat:number[][];
 
     draw() {
         this.context = Stage.getInstance().getContext();
     }
 
+    //rotateEular(degree: number) {    }
+    transform(x:number, y:number){
+        this.transMat[0][2] += x;
+        this.transMat[1][2] += y;
+    }
+
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
+        this.transMat = MathUtil.Matrix.identity(3);
     }
 }
 
@@ -33,18 +45,21 @@ class Rectangle extends DisplayObject {
 }
 
 class ImageField extends DisplayObject {
-    image:HTMLImageElement;
-    constructor(x: number, y: number,img:string,width?:number, height?:number) {
+    image: HTMLImageElement;
+
+    constructor(x: number, y: number, img: string, width?: number, height?: number) {
         super(x, y);
         this.image = new Image();
         this.image.src = img;
     }
+
     draw() {
         super.draw();
-        this.image.onload = ()=>{
-            this.context.drawImage(this.image,this.x, this.y);
-        }
-        
+        this.context.drawImage(this.image, this.x, this.y);
+        /*this.image.onload = () => {
+            this.context.drawImage(this.image, this.x, this.y);
+        }*/
+
     }
 }
 
@@ -85,6 +100,7 @@ class Stage {//singleton
     private static instance = new Stage();
     private context: CanvasRenderingContext2D;
     drawList: IDrawable[] = [];
+
     addChild(drawable: IDrawable) {
         this.drawList.push(drawable);
     }
@@ -102,6 +118,7 @@ class Stage {//singleton
 
     setContext(context: CanvasRenderingContext2D) {
         console.log("set context");
+        console.log(MathUtil.Matrix.identity(3));
         this.context = context;
     }
 

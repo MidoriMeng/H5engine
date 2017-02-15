@@ -7,9 +7,15 @@ var DisplayObject = (function () {
     function DisplayObject(x, y) {
         this.x = x;
         this.y = y;
+        this.transMat = MathUtil.Matrix.identity(3);
     }
     DisplayObject.prototype.draw = function () {
         this.context = Stage.getInstance().getContext();
+    };
+    //rotateEular(degree: number) {    }
+    DisplayObject.prototype.transform = function (x, y) {
+        this.transMat[0][2] += x;
+        this.transMat[1][2] += y;
     };
     return DisplayObject;
 }());
@@ -34,11 +40,11 @@ var ImageField = (function (_super) {
         this.image.src = img;
     }
     ImageField.prototype.draw = function () {
-        var _this = this;
         _super.prototype.draw.call(this);
-        this.image.onload = function () {
-            _this.context.drawImage(_this.image, _this.x, _this.y);
-        };
+        this.context.drawImage(this.image, this.x, this.y);
+        /*this.image.onload = () => {
+            this.context.drawImage(this.image, this.x, this.y);
+        }*/
     };
     return ImageField;
 }(DisplayObject));
@@ -92,6 +98,7 @@ var Stage = (function () {
     };
     Stage.prototype.setContext = function (context) {
         console.log("set context");
+        console.log(MathUtil.Matrix.identity(3));
         this.context = context;
     };
     Stage.prototype.getContext = function () {
