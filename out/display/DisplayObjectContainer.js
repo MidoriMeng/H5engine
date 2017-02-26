@@ -9,6 +9,8 @@ var DisplayObjectContainer = (function (_super) {
         _super.call(this, 0, 0, canvas.width, canvas.height);
         this.children = [];
         this.canvas = canvas;
+        this._id = IDs.CONTAINER_ID + DisplayObjectContainer.count;
+        DisplayObjectContainer.count++;
     }
     DisplayObjectContainer.prototype.addChild = function (drawable) {
         this.children.push(drawable);
@@ -35,6 +37,7 @@ var DisplayObjectContainer = (function (_super) {
         }
         return result;
     };
+    DisplayObjectContainer.count = 0;
     return DisplayObjectContainer;
 }(DisplayObject));
 //# sourceMappingURL=DisplayObjectContainer.js.map

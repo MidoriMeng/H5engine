@@ -13,6 +13,13 @@ var DisplayObject = (function () {
         this.globalMat = MathUtil.identityMatrix(3);
         this.listeners = [];
     }
+    Object.defineProperty(DisplayObject.prototype, "id", {
+        get: function () {
+            return this._id;
+        },
+        enumerable: true,
+        configurable: true
+    });
     DisplayObject.prototype.draw = function (context) {
         if (this.father)
             this.globalMat = this.localMat.multiply(this.father.globalMat);
@@ -76,7 +83,7 @@ var DisplayObject = (function () {
             }
         }
         else
-            console.error("no chain");
+            console.log("no chain");
     };
     return DisplayObject;
 }());
@@ -84,10 +91,13 @@ var Rectangle = (function (_super) {
     __extends(Rectangle, _super);
     function Rectangle(x, y, width, height) {
         _super.call(this, x, y, width, height);
+        this._id = IDs.RECTANGLE_ID + Rectangle.count;
+        Rectangle.count++;
     }
     Rectangle.prototype.render = function (context) {
         context.fillRect(this.x, this.y, this.width, this.height);
     };
+    Rectangle.count = 0;
     return Rectangle;
 }(DisplayObject));
 var Picture = (function (_super) {
@@ -103,6 +113,8 @@ var Picture = (function (_super) {
             self.height = image.height;
             console.log("width" + self.width + "height" + self.height);
         };
+        this._id = IDs.PICTURE_ID + Picture.count;
+        Picture.count++;
     }
     Picture.prototype.render = function (context) {
         var _this = this;
@@ -111,6 +123,7 @@ var Picture = (function (_super) {
             context.drawImage(_this.image, _this.x, _this.y);
         };
     };
+    Picture.count = 0;
     return Picture;
 }(DisplayObject));
 var TextField = (function (_super) {
@@ -119,6 +132,8 @@ var TextField = (function (_super) {
         _super.call(this, x, y, str.length * 15, 20);
         this.str = str;
         //  this.size = size;
+        this._id = IDs.TEXT_ID + TextField.count;
+        TextField.count++;
     }
     TextField.prototype.render = function (context) {
         //  var font = this.context.font;
@@ -126,6 +141,7 @@ var TextField = (function (_super) {
         context.fillText(this.str, this.x, this.y);
         //  this.context.font = font;
     };
+    TextField.count = 0;
     return TextField;
 }(DisplayObject));
 //# sourceMappingURL=DisplayObject.js.map

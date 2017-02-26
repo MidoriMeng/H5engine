@@ -1,11 +1,13 @@
 class DisplayObjectContainer extends DisplayObject {
     children: DisplayObject[] = [];
     private canvas: HTMLCanvasElement;
-
+    private static count = 0;
 
     constructor(canvas: HTMLCanvasElement) {
         super(0, 0, canvas.width, canvas.height);
         this.canvas = canvas;
+        this._id = IDs.CONTAINER_ID+DisplayObjectContainer.count;
+        DisplayObjectContainer.count++;
     }
 
     addChild(drawable: DisplayObject) {

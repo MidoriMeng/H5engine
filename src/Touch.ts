@@ -1,3 +1,4 @@
+
 class TouchListener{
     type: number;
     func: Function;

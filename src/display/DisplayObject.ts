@@ -1,3 +1,4 @@
+
 //var math = require('mathjs');
 interface IDrawable {
     width: number;
@@ -11,7 +12,7 @@ interface IDrawable {
     scale(x: number, y: number);
 }
 
-abstract class DisplayObject implements IDrawable {
+abstract class DisplayObject implements Citizen, IDrawable {
     x: number;
     y: number;
     width: number;
@@ -20,6 +21,11 @@ abstract class DisplayObject implements IDrawable {
     localMat: MathUtil.Matrix;
     globalMat: MathUtil.Matrix;
     listeners: TouchListener[];
+    protected _id: string;
+
+    get id(): string {
+        return this._id;
+    }
 
     constructor(x: number, y: number, width: number, height: number) {
         this.x = x;
@@ -66,7 +72,7 @@ abstract class DisplayObject implements IDrawable {
     hitTest(event: TouchEvents): DisplayObject[] {
         //矩阵逆变换
         var inverseMat = this.globalMat.inverse();
-        var localClick = new MathUtil.Matrix(3,1);
+        var localClick = new MathUtil.Matrix(3, 1);
         localClick.data[0][0] = event.x;
         localClick.data[1][0] = event.y;
         localClick.data[2][0] = 1;
@@ -100,13 +106,17 @@ abstract class DisplayObject implements IDrawable {
                 });
             }
         } else
-            console.error("no chain");
+            console.log("no chain");
     }
 }
 
 class Rectangle extends DisplayObject {
+    private static count = 0;
+
     constructor(x: number, y: number, width: number, height: number) {
         super(x, y, width, height);
+        this._id = IDs.RECTANGLE_ID+Rectangle.count;
+        Rectangle.count++;
     }
 
     protected render(context: CanvasRenderingContext2D) {
@@ -116,6 +126,7 @@ class Rectangle extends DisplayObject {
 
 class Picture extends DisplayObject {
     private image: HTMLImageElement;
+    private static count = 0;
 
     constructor(x: number, y: number, img: string, width?: number, height?: number) {
         var image = new Image();
@@ -128,6 +139,8 @@ class Picture extends DisplayObject {
             self.height = image.height;
             console.log("width" + self.width + "height" + self.height);
         }
+        this._id = IDs.PICTURE_ID+Picture.count;
+        Picture.count++;
 
     }
 
@@ -143,11 +156,14 @@ class TextField extends DisplayObject {
     // size: number;
     //maxWidth: number;
     str: string;
+    private static count = 0;
 
     constructor(x: number, y: number, str: string) {
         super(x, y, str.length * 15, 20);
         this.str = str;
         //  this.size = size;
+        this._id = IDs.TEXT_ID+TextField.count;
+        TextField.count++;
     }
 
     protected render(context: CanvasRenderingContext2D) {
