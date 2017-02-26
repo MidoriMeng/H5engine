@@ -21,13 +21,13 @@ window.onload = function () {
     }*/
     //创建绘制对象
     context.fillStyle = "#FFFF00";
-    //stage.transform(100, 0);
-    var rect = new Rectangle(0, 0, 50, 50);
-    //rect.rotate(Math.PI / 6);
+    stage.transform(100, 0);
+    var rect = new Rectangle(0, 0, 100, 100);
+    rect.rotate(Math.PI / 4);
     var container = new DisplayObjectContainer(canvas);
-    //container.scale(2, 1);
+    container.scale(2, 1);
     var text = new TextField(80, 80, "hello world");
-    //text.scale(1, 5);
+    text.scale(1, 5);
     var image = new Picture(100, 100, "/src/test.jpg");
     container.addChild(text);
     container.addChild(image);
@@ -37,6 +37,7 @@ window.onload = function () {
     stage.addEventListener(TouchEvents.CLICK, function () { console.log("stage"); }, true);
     container.addEventListener(TouchEvents.CLICK, function () { console.log("container"); });
     image.addEventListener(TouchEvents.CLICK, function () { console.log("image"); });
+    rect.addEventListener(TouchEvents.CLICK, function () { console.log("rect"); });
     //绘制
     /*requestAnimationFrame(()=>{
         context.clearRect(0, 0, canvas.width, canvas.height);

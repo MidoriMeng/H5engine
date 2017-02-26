@@ -26,8 +26,8 @@ abstract class DisplayObject implements IDrawable {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.localMat = MathUtil.identity(3);
-        this.globalMat = MathUtil.identity(3);
+        this.localMat = MathUtil.identityMatrix(3);
+        this.globalMat = MathUtil.identityMatrix(3);
         this.listeners = [];
     }
 
@@ -64,8 +64,15 @@ abstract class DisplayObject implements IDrawable {
     }
 
     hitTest(event: TouchEvents): DisplayObject[] {
-        var localClickX = event.x - this.x;
-        var localClickY = event.y - this.y;
+        //矩阵逆变换
+        var inverseMat = this.globalMat.inverse();
+        var localClick = new MathUtil.Matrix(3,1);
+        localClick.data[0][0] = event.x;
+        localClick.data[1][0] = event.y;
+        localClick.data[2][0] = 1;
+        localClick = inverseMat.multiply(localClick);
+        var localClickX = localClick.a - this.x;
+        var localClickY = localClick.b - this.y;
         if (0 < localClickX &&
             localClickX < this.width &&
             0 < localClickY &&

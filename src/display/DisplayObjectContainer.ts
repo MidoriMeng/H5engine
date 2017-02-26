@@ -27,12 +27,13 @@ class DisplayObjectContainer extends DisplayObject {
     hitTest(event: TouchEvents): DisplayObject[] {
         var result:DisplayObject[];
         //执行孩子的检测，储存最后一个（…）碰到的物体
-        this.children.forEach((value) => {//forEach无法return中断遍历[笑cry]
-            result = value.hitTest(event);
-            if (result) {
+        for(var i = 0; i <this.children.length;i++){
+            result = this.children[i].hitTest(event);
+            if(result){
                 result.unshift(this);
+                return result;
             }
-        });
+        }
         return result;
     }
 }
