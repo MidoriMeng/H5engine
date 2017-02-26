@@ -57,9 +57,88 @@ var MathUtil;
             }
             return result;
         };
+        Matrix.prototype.inverse = function (other) {
+            var result = new Matrix(this.degreeI, this.degreeI);
+            var i_s = [0, 0, 0];
+            var j_s = [0, 0, 0];
+            var m = this.data;
+            var fDet = 1;
+            var f = 1;
+            for (var k = 0; k < this.degreeI; k++) {
+                // 第一步，全选主元
+                var fMax = 0;
+                for (var i = k; i < this.degreeI; i++) {
+                    for (var j = k; j < this.degreeJ; j++) {
+                        var f = Math.abs(m[i][j]);
+                        if (f > fMax) {
+                            fMax = f;
+                            i_s[k] = i;
+                            j_s[k] = j;
+                        }
+                    }
+                }
+                if (Math.abs(fMax) < 0.0001)
+                    return null;
+                if (i_s[k] != k) {
+                    f = -f;
+                    swap(m[k][0], m[i_s[k]][0]);
+                    swap(m[k][1], m[i_s[k]][1]);
+                    swap(m[k][2], m[i_s[k]][2]);
+                }
+                if (j_s[k] != k) {
+                    f = -f;
+                    swap(m[0][k], m[0][j_s[k]]);
+                    swap(m[1][k], m[1][j_s[k]]);
+                    swap(m[2][k], m[2][j_s[k]]);
+                }
+                //计算行列式
+                fDet *= m[k][k];
+                //计算逆矩阵
+                //step 2
+                m[k][k] = 1 / m[k][k];
+                //step 3
+                for (var i = 0; i < this.degreeI; i++) {
+                    if (i != k)
+                        m[k][i] *= m[k][k];
+                }
+                //step 4
+                for (var i = 0; i < this.degreeI; i++) {
+                    if (i != k) {
+                        for (j = 0; j < 3; j++) {
+                            if (j != k)
+                                m[i][j] = m[i][j] - m[i][k] * m[k][j];
+                        }
+                    }
+                }
+                //step 5
+                for (i = 0; i < this.degreeI; i++) {
+                    if (i != k)
+                        m[i][k] *= (-m[k][k]);
+                }
+            }
+            for (k = this.degreeI - 1; k >= 0; k--) {
+                if (j_s[k] != k) {
+                    swap(m[k][0], m[j_s[k]][0]);
+                    swap(m[k][1], m[j_s[k]][1]);
+                    swap(m[k][2], m[j_s[k]][2]);
+                }
+                if (i_s[k] != k) {
+                    swap(m[0][k], m[0][i_s[k]]);
+                    swap(m[1][k], m[1][i_s[k]]);
+                    swap(m[2][k], m[2][i_s[k]]);
+                }
+            }
+            return result;
+        };
         return Matrix;
     }());
     MathUtil.Matrix = Matrix;
+    function swap(a, b) {
+        var temp = a;
+        a = b;
+        b = temp;
+    }
+    MathUtil.swap = swap;
     function identity(degree) {
         var result = new Matrix(degree, degree);
         for (var i = 0; i < degree; i++) {

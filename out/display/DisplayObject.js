@@ -11,6 +11,7 @@ var DisplayObject = (function () {
         this.height = height;
         this.localMat = MathUtil.identity(3);
         this.globalMat = MathUtil.identity(3);
+        this.listeners = [];
     }
     DisplayObject.prototype.draw = function (context) {
         if (this.father)
@@ -20,6 +21,10 @@ var DisplayObject = (function () {
         var m = this.globalMat.data;
         context.setTransform(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
         this.render(context);
+    };
+    DisplayObject.prototype.addEventListener = function (type, listener, capture, priority) {
+        var event = new TouchListener(type, listener, capture, priority);
+        this.listeners.push(event); //todo check listeners
     };
     DisplayObject.prototype.render = function (context) { };
     DisplayObject.prototype.rotate = function (eularDegree) {
@@ -33,6 +38,38 @@ var DisplayObject = (function () {
     DisplayObject.prototype.scale = function (x, y) {
         var mat = MathUtil.scale2Mat(x, y);
         this.localMat = mat.multiply(this.localMat);
+    };
+    DisplayObject.prototype.hitTest = function (event) {
+        var localClickX = event.x - this.x;
+        var localClickY = event.y - this.y;
+        if (0 < localClickX &&
+            localClickX < this.width &&
+            0 < localClickY &&
+            localClickY < this.height) {
+            return [this];
+        }
+        else
+            return null;
+    };
+    DisplayObject.prototype.dispatchEvent = function (type, chain, event) {
+        if (chain) {
+            var transformedChain = chain.slice(0);
+            if (type == "bubble") {
+                transformedChain.reverse();
+            }
+            for (var i = 0; i < transformedChain.length; i++) {
+                var element = transformedChain[i];
+                element.listeners.forEach(function (value) {
+                    var t = (type == "capture") ? value.capture : !value.capture;
+                    if (value.type == event.type && t) {
+                        //value.obj.func();todo更新func调用
+                        value.func();
+                    }
+                });
+            }
+        }
+        else
+            console.error("no chain");
     };
     return DisplayObject;
 }());
@@ -53,19 +90,26 @@ var Picture = (function (_super) {
         image.src = img;
         _super.call(this, x, y, image.width, image.height);
         this.image = image;
+        var self = this;
+        this.image.onload = function () {
+            self.width = image.width;
+            self.height = image.height;
+            console.log("width" + self.width + "height" + self.height);
+        };
     }
     Picture.prototype.render = function (context) {
+        var _this = this;
         context.drawImage(this.image, this.x, this.y);
-        /*this.image.onload = () => {
-            this.context.drawImage(this.image, this.x, this.y);
-        }*/
+        this.image.onload = function () {
+            context.drawImage(_this.image, _this.x, _this.y);
+        };
     };
     return Picture;
 }(DisplayObject));
 var TextField = (function (_super) {
     __extends(TextField, _super);
     function TextField(x, y, str) {
-        _super.call(this, x, y, 100, 20);
+        _super.call(this, x, y, str.length * 15, 20);
         this.str = str;
         //  this.size = size;
     }

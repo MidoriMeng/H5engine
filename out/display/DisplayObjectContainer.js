@@ -23,6 +23,18 @@ var DisplayObjectContainer = (function (_super) {
             value.draw(self.canvas.getContext("2d"));
         });
     };
+    DisplayObjectContainer.prototype.hitTest = function (event) {
+        var _this = this;
+        var result;
+        //执行孩子的检测，储存最后一个（…）碰到的物体
+        this.children.forEach(function (value) {
+            result = value.hitTest(event);
+            if (result) {
+                result.unshift(_this);
+            }
+        });
+        return result;
+    };
     return DisplayObjectContainer;
 }(DisplayObject));
 //# sourceMappingURL=DisplayObjectContainer.js.map

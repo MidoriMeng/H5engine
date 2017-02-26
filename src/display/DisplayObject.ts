@@ -11,7 +11,7 @@ interface IDrawable {
     scale(x: number, y: number);
 }
 
-class DisplayObject implements IDrawable {
+abstract class DisplayObject implements IDrawable {
     x: number;
     y: number;
     width: number;
@@ -19,6 +19,7 @@ class DisplayObject implements IDrawable {
     father: IDrawable;
     localMat: MathUtil.Matrix;
     globalMat: MathUtil.Matrix;
+    listeners: TouchListener[];
 
     constructor(x: number, y: number, width: number, height: number) {
         this.x = x;
@@ -27,6 +28,7 @@ class DisplayObject implements IDrawable {
         this.height = height;
         this.localMat = MathUtil.identity(3);
         this.globalMat = MathUtil.identity(3);
+        this.listeners = [];
     }
 
     draw(context: CanvasRenderingContext2D) {
@@ -37,6 +39,11 @@ class DisplayObject implements IDrawable {
         var m = this.globalMat.data;
         context.setTransform(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
         this.render(context);
+    }
+
+    addEventListener(type: number, listener: Function, capture?: boolean, priority?: number) {
+        var event = new TouchListener(type, listener, capture, priority);
+        this.listeners.push(event);//todo check listeners
     }
 
     protected render(context: CanvasRenderingContext2D) { }
@@ -56,6 +63,38 @@ class DisplayObject implements IDrawable {
         this.localMat = mat.multiply(this.localMat);
     }
 
+    hitTest(event: TouchEvents): DisplayObject[] {
+        var localClickX = event.x - this.x;
+        var localClickY = event.y - this.y;
+        if (0 < localClickX &&
+            localClickX < this.width &&
+            0 < localClickY &&
+            localClickY < this.height) {
+            return [this];
+        }
+
+        else return null;
+    }
+
+    dispatchEvent(type: "capture" | "bubble", chain: DisplayObject[], event: TouchEvents) {
+        if (chain) {
+            var transformedChain = chain.slice(0);
+            if (type == "bubble") {
+                transformedChain.reverse();
+            }
+            for (var i = 0; i < transformedChain.length; i++) {//逆向遍历点击事件链的元素
+                var element = transformedChain[i];
+                element.listeners.forEach((value) => {//每个元素派发事件
+                    var t = (type == "capture") ? value.capture : !value.capture;
+                    if (value.type == event.type && t) {
+                        //value.obj.func();todo更新func调用
+                        value.func();
+                    }
+                });
+            }
+        } else
+            console.error("no chain");
+    }
 }
 
 class Rectangle extends DisplayObject {
@@ -76,15 +115,20 @@ class Picture extends DisplayObject {
         image.src = img;
         super(x, y, image.width, image.height);
         this.image = image;
+        var self = this;
+        this.image.onload = () => {
+            self.width = image.width;
+            self.height = image.height;
+            console.log("width" + self.width + "height" + self.height);
+        }
 
     }
 
     protected render(context: CanvasRenderingContext2D) {
         context.drawImage(this.image, this.x, this.y);
-        /*this.image.onload = () => {
-            this.context.drawImage(this.image, this.x, this.y);
-        }*/
-
+        this.image.onload = () => {
+            context.drawImage(this.image, this.x, this.y);
+        }
     }
 }
 
@@ -94,7 +138,7 @@ class TextField extends DisplayObject {
     str: string;
 
     constructor(x: number, y: number, str: string) {
-        super(x, y, 100, 20);
+        super(x, y, str.length * 15, 20);
         this.str = str;
         //  this.size = size;
     }
@@ -105,6 +149,8 @@ class TextField extends DisplayObject {
         context.fillText(this.str, this.x, this.y);
         //  this.context.font = font;
     }
+
+
 }
 
 
