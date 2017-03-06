@@ -15,7 +15,7 @@ class UIService extends engine.DisplayObjectContainer {
     displayDialog(dialog: Dialog) {
         this.dialog = dialog;
         this.addChild(this.dialog);
-        //this.dialog.addEventListener(engine.TouchEvent.TOUCH_TAP, this.nextDialog, this);
+        //this.dialog.addEventListener(engine.TouchEvent.CLICK, this.nextDialog, this);
     }
 
     /**对话结束返回true */

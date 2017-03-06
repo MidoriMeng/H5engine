@@ -27,7 +27,7 @@ namespace MAP {
                 this.x = position.x;
                 this.y = position.y;
             }
-            this.texture = RES.getRes(data.texture);
+            this.texture = engine.RES.getRes(data.texture);
             this.passSpeed = data.speed;
         }
 

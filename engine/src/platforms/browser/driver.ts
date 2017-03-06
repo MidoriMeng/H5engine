@@ -1,11 +1,17 @@
 namespace engine {
-    export var canvas;
+    var stage;
+    export function click(x:number,y:number) {
+        var clickEvent = new TouchEvent(x, y, TouchEvent.CLICK)
+        var clickChain = stage.hitTest(clickEvent);
+        stage.dispatchEvent("capture", clickChain, clickEvent);
+        stage.dispatchEvent("bubble", clickChain, clickEvent);
+    }
     export let run = (canvas: HTMLCanvasElement) => {
 
         canvas = document.createElement("canvas");
-        var objBody = document.getElementsByTagName("body").item(0); 
+        var objBody = document.getElementsByTagName("body").item(0);
         objBody.appendChild(canvas);
-        var stage = new DisplayObjectContainer();
+        stage = new DisplayObjectContainer();
         let context2D = canvas.getContext("2d");
         let lastNow = Date.now();
         let frameHandler = () => {
@@ -56,7 +62,4 @@ namespace engine {
         return stage;
 
     }
-
-
-
 }

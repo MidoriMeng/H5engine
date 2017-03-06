@@ -10,17 +10,12 @@ class Main implements EventEmitter{
     user: User;
     observerList:Array<Observer>;
     commandList:CommandList;
-    /**
-     * 创建游戏场景
-     * Create a game scene
-     */
 
     constructor(stage:engine.DisplayObjectContainer){
         this.stage = stage;
     }
 
     createGameScene(canvas): void {
-        
         //加载命令
         this.commandList = new CommandList();
 
@@ -81,7 +76,7 @@ class Main implements EventEmitter{
         this.player.setCurHero(this.user.heroes[0]);
         this.player.searchAgent = new AStarSearch(this.mapService.curMap.objGrid,
             this.mapService.curMap.creatureGrid);
-        this.player.addEventListener(engine.TouchEvent.TOUCH_TAP, this.showHeroPanel);
+        this.player.addEventListener(engine.TouchEvent.CLICK, this.showHeroPanel);
         this.player.touchEnabled = true;
         //this.player.addObserver(MissionService.getInstance());
         //add other people here
@@ -102,11 +97,11 @@ class Main implements EventEmitter{
         var text = new engine.TextField(200,600,"auto");
         this.stage.addChild(text);
         text.touchEnabled = true;
-        text.addEventListener(engine.TouchEvent.TOUCH_TAP, this.autoButton);
+        text.addEventListener(engine.TouchEvent.CLICK, this.autoButton);
 
 
         this.stage.touchEnabled = true;
-        //this.addEventListener(engine.TouchEvent.TOUCH_TAP, this.onTap, this);
+        //this.addEventListener(engine.TouchEvent.CLICK, this.onTap, this);
 
         this.stage.addChild(this.mapService);
         this.stage.addChild(this.player);
@@ -114,7 +109,7 @@ class Main implements EventEmitter{
         this.stage.addChild(MonsterService.getInstance());
         this.stage.addChild(UIService.getInstance());
 
-        this.stage.addEventListener(engine.TouchEvent.TOUCH_TAP,this.onTap);
+        this.stage.addEventListener(engine.TouchEvent.CLICK,this.onTap);
 
         //test here
     }
@@ -149,7 +144,7 @@ class Main implements EventEmitter{
         var userPanel = new HeroPanel(this.player.curHero);
         this.stage.addChild(userPanel);
         this.player.touchEnabled = false;
-        userPanel.close.addEventListener(engine.TouchEvent.TOUCH_TAP, () => {
+        userPanel.close.addEventListener(engine.TouchEvent.CLICK, () => {
             this.stage.removeChild(userPanel);
             this.player.touchEnabled = true;
         });

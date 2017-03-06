@@ -1,21 +1,4 @@
-namespace engine {
-    export interface IDrawable {
-        width: number;
-        height: number;
-        localMat: MathUtil.Matrix;
-        globalMat: MathUtil.Matrix;
-        father: IDrawable;
-        draw(context: CanvasRenderingContext2D);
-        transform(x: number, y: number);
-        rotate(eularDegree: number);
-        scale(x: number, y: number);
-        alpha: number;
-        color: string;
-    }
-
-    export interface touchable {
-        touchEnabled: boolean;
-    }
+namespace engine {    
 
     export abstract class DisplayObject implements Citizen, IDrawable, touchable {
         x: number;
@@ -45,7 +28,7 @@ namespace engine {
             this.listeners = [];
         }
 
-        draw(context: CanvasRenderingContext2D) {
+        draw(context: IContext) {
             if (this.father)
                 this.globalMat = this.localMat.multiply(this.father.globalMat);
             else
@@ -68,7 +51,7 @@ namespace engine {
             this.listeners.push(event);//todo check listeners
         }
 
-        protected render(context: CanvasRenderingContext2D) { }
+        protected render(context: IContext) { }
 
         rotate(eularDegree: number) {
             var mat = MathUtil.rotate2Mat(eularDegree);
@@ -145,7 +128,7 @@ namespace engine {
             Shape.count++;
         }
 
-        protected render(context: CanvasRenderingContext2D) {
+        protected render(context: IContext) {
             this.shapes.forEach((value) => { value.draw(context) });
         }
 
@@ -166,9 +149,6 @@ namespace engine {
         }
     }
 
-    interface ShapeModel {
-        draw(context: CanvasRenderingContext2D);
-    }
     class Rectangle extends DisplayObject {
         x: number;
         y: number;
@@ -180,36 +160,35 @@ namespace engine {
             super(x, y, width, height);
         }
 
-        render(context: CanvasRenderingContext2D) {
+        render(context: IContext) {
             context.fillRect(this.x, this.y, this.width, this.height);
         }
     }
 
     export class Bitmap extends DisplayObject {
-        private image: HTMLImageElement;
+        private texture: Texture;
         private static count = 0;
 
-        constructor(x: number, y: number, img: string, width?: number, height?: number) {
-            var image = new Image();
-            image.src = img;
-            super(x, y, image.width, image.height);
-            this.image = image;
-            var self = this;
-            this.image.onload = () => {
-                self.width = image.width;
-                self.height = image.height;
-                console.log("width" + self.width + "height" + self.height);
-            }
+        constructor(img?: string) {
+            //load texture
+            RES.getRes(img).then(value=>{
+                //this.texture = value;
+                //this.width = value.width;
+                //this.height = value.height;
+                console.log("load complete "+value);
+            })
+            super(0, 0, 0, 0);
+            // var texture =loadTexture(img);
+            
+            //generate ID
             this._id = IDs.PICTURE_ID + Bitmap.count;
             Bitmap.count++;
 
         }
 
-        protected render(context: CanvasRenderingContext2D) {
-            context.drawImage(this.image, this.x, this.y);
-            this.image.onload = () => {
-                context.drawImage(this.image, this.x, this.y);
-            }
+
+        protected render(context: IContext) {
+            context.drawPicture(this.texture, this.x, this.y);
         }
     }
 
@@ -227,7 +206,7 @@ namespace engine {
             TextField.count++;
         }
 
-        protected render(context: CanvasRenderingContext2D) {
+        protected render(context: IContext) {
             //  var font = this.context.font;
             // this.context.font = this.size + "px Verdana";
             context.fillText(this.str, this.x, this.y);
@@ -237,10 +216,9 @@ namespace engine {
 
     }
 
-
     export class DisplayObjectContainer extends DisplayObject {
         children: DisplayObject[] = [];
-        private canvas: HTMLCanvasElement;
+        private canvas: ICanvas;
         private static count = 0;
 
         constructor() {
@@ -256,13 +234,13 @@ namespace engine {
         }
 
         draw() {
-            super.draw(this.canvas.getContext("2d"));
+            super.draw(this.canvas.getContext2D());
         }
 
         render() {
             var self = this;
             this.children.forEach((value) => {
-                value.draw(self.canvas.getContext("2d"));
+                value.draw(self.canvas.getContext2D());
             });
         }
 

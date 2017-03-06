@@ -55,10 +55,10 @@ class HeroPanel extends engine.DisplayObjectContainer {
             equipY += (e.height + HeroPanel.ALIGN);
             this.addChild(e);
             e.touchEnabled = true;
-            /*e.addEventListener(engine.TouchEvent.TOUCH_TAP,(evt,context)=>{
+            /*e.addEventListener(engine.TouchEvent.CLICK,(evt,context)=>{
                 this.showEquipment(this.hero.equipment[context],evt);
             },this);*/
-            e.addEventListener(engine.TouchEvent.TOUCH_TAP, this.showDetail, this);
+            e.addEventListener(engine.TouchEvent.CLICK, this.showDetail, this);
 
         }
 
@@ -89,7 +89,7 @@ class HeroPanel extends engine.DisplayObjectContainer {
         equipPanel.y = evt.stageY;
         this.addChild(equipPanel);
         equipPanel.touchEnabled = true;
-        equipPanel.addEventListener(engine.TouchEvent.TOUCH_TAP,()=> {
+        equipPanel.addEventListener(engine.TouchEvent.CLICK,()=> {
             this.removeChild(equipPanel);
         },this);
     }

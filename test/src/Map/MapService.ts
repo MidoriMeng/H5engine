@@ -12,7 +12,7 @@ namespace MAP {
             //map 01
 
             this.curNPCList = new Array<NPC>();
-            this.addEventListener(engine.TouchEvent.TOUCH_TAP, this.onTap);
+            this.addEventListener(engine.TouchEvent.CLICK, this.onTap);
         }
 
         static getInstance(): MapService {
@@ -34,8 +34,8 @@ namespace MAP {
 
         loadNPCs() {
             var appearances = {
-                NORTH: RES.getRes("Actor1_12_png"), SOUTH: RES.getRes("Actor1_02_png"),
-                EAST: RES.getRes("Actor1_09_png"), WEST: RES.getRes("actor1_06_png")
+                NORTH: engine.RES.getRes("Actor1_12_png"), SOUTH: engine.RES.getRes("Actor1_02_png"),
+                EAST: engine.RES.getRes("Actor1_09_png"), WEST: engine.RES.getRes("actor1_06_png")
             };
             var npc_001 = new NPC("001", "npc1",
                 appearances,

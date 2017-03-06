@@ -1,5 +1,9 @@
 namespace engine {
 
+    export interface touchable {
+        touchEnabled: boolean;
+    }
+    
     export class TouchListener {
         type: number;
         func: Function;

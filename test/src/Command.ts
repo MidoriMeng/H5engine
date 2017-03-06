@@ -33,38 +33,33 @@ class WalkCommand implements Command {
 }
 
 class FightCommand implements Command {
-    /**
-     * 所有的 Command 都需要有这个标记，应该如何封装处理这个问题呢？
-     */
     _hasBeenCancelled = false;
 
     execute(callback: Function): void {
-        //event = new engine.TouchEvent(engine.TouchEvent.TOUCH_TAP);
+        //get monster
         var mservice = MonsterService.getInstance();
         var monster = mservice.addMonster();
-        var event = engine.Event.create(engine.TouchEvent, "touchTap", true, true);
-        event.$initTo(mservice.x + monster.x + monster.width / 2,
-            mservice.y + monster.y + monster.width / 2, 0);
-        event.touchDown = false;
+        //kill monster
         engine.setTimeout(() => {
-            monster.dispatchEvent(event);//执行monster上的listener，即monsterService.onTap
-        }, this, 200);
+            engine.click(mservice.x + monster.x + monster.width / 2,
+            mservice.y + monster.y + monster.width / 2)//执行monster上的listener，即monsterService.onTap
+        }, 200);
 
         engine.setTimeout(() => {
             if (!this._hasBeenCancelled) {
                 engine.Event.release(event);
                 callback();
             }
-        }, this, 500);
+        }, 500);
 
     }
 
     cancel(callback: Function) {
         console.log("脱离战斗")
         this._hasBeenCancelled = true;
-        engine.setTimeout(function () {
+        engine.Ticker.getInstance().setTimeout(function () {
             callback();
-        }, this, 100)
+        }, 100)
 
     }
 }
@@ -86,7 +81,7 @@ class TalkCommand implements Command {
                 callback();
                 engine.clearInterval(key);
             }
-        },this, 1000);
+        }, 1000);
     }
 
     cancel(callback: Function) {
@@ -114,7 +109,7 @@ class CommandList {
                 console.log("时间过长，自动解除frozen");
             }
 
-        }, this, 5000);
+        }, 5000);
         if (command) {
             command.cancel(() => {
                 this._frozen = false;
@@ -129,7 +124,7 @@ class CommandList {
 
     execute() {
         if (this._frozen) {
-            engine.setTimeout(this.execute, this, 100);
+            engine.setTimeout(this.execute, 100);
             console.log("frozen");
             return;
         }

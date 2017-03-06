@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es5",
+		"target": "es6",
 		"out": "./engine/out/engine.js",
 		"declaration": true
 	},
@@ -10,6 +10,9 @@
 		"src/core/displaylist.ts",
 		"src/core/ids.ts",
 		"src/core/touch.ts",
-		"src/platforms/browser/driver.ts"
+		"src/core/res.ts",
+		"src/core/draw.ts",
+		"src/platforms/browser/driver.ts",
+		"src/platforms/browser/draw.ts"
 	]
 }

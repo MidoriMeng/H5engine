@@ -74,12 +74,12 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
 
     }
     /*addListener() {
-        this.addEventListener(engine.TouchEvent.TOUCH_TAP, this.showDialog, this);
+        this.addEventListener(engine.TouchEvent.CLICK, this.showDialog, this);
     }*/
 
     showDialog() {
         UIService.getInstance().displayDialog(new Dialog(this, this.missionList[0].description, this.missionList[0], this.id));
-        //this.removeEventListener(engine.TouchEvent.TOUCH_TAP, this.showDialog, this);
+        //this.removeEventListener(engine.TouchEvent.CLICK, this.showDialog, this);
     }
 
     static rule(rule: "interactableFirst" | "all", missions: missionList, self: NPC) {

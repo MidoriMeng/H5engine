@@ -37,7 +37,7 @@ class MonsterService extends engine.DisplayObjectContainer implements EventEmitt
         super();
         this.observerList = new Array<Observer>();
         this.monsterList = new Array<Monster>();
-        this.addEventListener(engine.TouchEvent.TOUCH_TAP, this.onTap, this);
+        this.addEventListener(engine.TouchEvent.CLICK, this.onTap, this);
     }
 
     onTap(e: engine.TouchEvent) {
