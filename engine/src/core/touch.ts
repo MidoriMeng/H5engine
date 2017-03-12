@@ -2,6 +2,10 @@ namespace engine {
 
     export interface touchable {
         touchEnabled: boolean;
+        listeners: TouchListener[];
+        addEventListener(type: number, listener: Function, capture?: boolean, priority?: number);
+        hitTest(event: TouchEvent): DisplayObject[];
+        dispatchEvent(type: "capture" | "bubble", chain: DisplayObject[], event: TouchEvent)
     }
     
     export class TouchListener {

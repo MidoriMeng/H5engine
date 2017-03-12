@@ -1,23 +1,62 @@
 namespace engine {
-    export var canvas;
+    export class Context implements IContext {
+        data: CanvasRenderingContext2D;
+        globalAlpha: number;
+        fillStyle: string;
+        drawImage(tex: IBitmap, x: number, y: number) {
+            this.data.drawImage(tex.data, x, y);
+        }
 
-    export class Texture implements ITexture {
-        data: HTMLImageElement;
+        fillRect(x: number, y: number, width: number, height: number) {
+            this.data.fillRect(x, y, width, height);
+        }
+        setTransform(a, b, c, d, tx, ty) {
+            this.data.setTransform(a, b, c, d, tx, ty);
+        }
+        fillText(str: string, x: number, y: number) {
+            this.data.fillText(str, x, y);
+        }
+        clearRect(x: number, y: number, width: number, height: number) {
+            this.clearRect(x, y, width, height);
+        }
+    }
+
+    export class Canvas implements ICanvas {
+        data: HTMLCanvasElement;
         width: number;
         height: number;
-    }
-
-    export class Context extends CanvasRenderingContext2D implements IContext {
-
-        drawPicture(tex: Texture, x: number, y: number) {
-            super.drawImage(tex.data, 0, 0);
+        getContext(type: string) {
+            return this.data.getContext('2d');
         }
     }
 
-    export class Canvas extends HTMLCanvasElement implements ICanvas{
-        getContext2D():IContext{
-            return super.getContext("2d") as Context;
+    export namespace RES {
+        var RESOURCE_PATH = "././Resources/";
+
+        export function getRes(path: string) {
+            return new Promise(function (resolve, reject) {
+                var result = new Image();
+                result.src = RESOURCE_PATH + path;
+                result.onload = () => {
+                    resolve(result);
+                }
+            });
         }
+        /*function loadTexture(path: string) {
+            return new Promise(resolve => {
+                var result = new Image(); 
+                result.src = RESOURCE_PATH + path;
+                result.onload = () => {
+                    resolve(result);
+                } 
+            });
+    }*/
+
+
+        /*export async function getRes(path: string) {
+            return await loadTexture(path);
+            //return new engine.Texture();
+    }*/
     }
 
 }

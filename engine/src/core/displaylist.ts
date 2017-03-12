@@ -1,4 +1,4 @@
-namespace engine {    
+namespace engine {
 
     export abstract class DisplayObject implements Citizen, IDrawable, touchable {
         x: number;
@@ -12,7 +12,7 @@ namespace engine {
         protected _id: string;
         touchEnabled = false;
         alpha = 1;
-        color = "#FFFF00";
+        color = "#000000";
 
         get id(): string {
             return this._id;
@@ -28,22 +28,22 @@ namespace engine {
             this.listeners = [];
         }
 
-        draw(context: IContext) {
+        draw() {
             if (this.father)
                 this.globalMat = this.localMat.multiply(this.father.globalMat);
             else
                 this.globalMat = this.localMat;
             var m = this.globalMat.data;
-            context.setTransform(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
-            var alpha = context.globalAlpha;
-            context.globalAlpha = this.alpha * (this.father.alpha || 1);
-            var color = context.fillStyle;
-            context.fillStyle = this.color;
+            context2D.setTransform(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
+            var alpha = context2D.globalAlpha;
+            context2D.globalAlpha = this.alpha * (this.father ? this.father.alpha : 1);
+            var color = context2D.fillStyle;
+            context2D.fillStyle = this.color;
 
-            this.render(context);
+            this.render();
 
-            context.globalAlpha = alpha;
-            context.fillStyle = color;
+            context2D.globalAlpha = alpha;
+            context2D.fillStyle = color;
         }
 
         addEventListener(type: number, listener: Function, capture?: boolean, priority?: number) {
@@ -51,7 +51,7 @@ namespace engine {
             this.listeners.push(event);//todo check listeners
         }
 
-        protected render(context: IContext) { }
+        protected render() { }
 
         rotate(eularDegree: number) {
             var mat = MathUtil.rotate2Mat(eularDegree);
@@ -112,74 +112,53 @@ namespace engine {
         }
 
         beginFill(color: string) {
-
             this.color = color;
         }
+
+        endFill() { }
     }
 
 
-    export class Shape extends DisplayObject {
-        private static count = 0;
-        private shapes: DisplayObject[] = [];
 
-        constructor() {
-            super(0, 0, 0, 0);
-            this._id = IDs.SHAPE_ID + Shape.count;
-            Shape.count++;
-        }
-
-        protected render(context: IContext) {
-            this.shapes.forEach((value) => { value.draw(context) });
-        }
-
-        drawRect(x: number, y: number, width: number, height: number) {
-            this.shapes.push(new Rectangle(x, y, width, height));
-            this.width += width;
-            this.height += height;
-        }
-
-        hitTest(event: TouchEvent): DisplayObject[] {
-            var result;
-            this.shapes.forEach((value) => {
-                var temp = value.hitTest(event);
-                if (temp)
-                    result = temp;
-            })
-            return result;
+    class ShapeDisplayObject extends DisplayObject {
+        draw() {
+            super.draw();
+            this.color = this.father.color;
         }
     }
 
-    class Rectangle extends DisplayObject {
+    class Rectangle extends ShapeDisplayObject {
         x: number;
         y: number;
         width: number;
         height: number;
 
-
-        constructor(x: number, y: number, width: number, height: number) {
-            super(x, y, width, height);
-        }
-
-        render(context: IContext) {
-            context.fillRect(this.x, this.y, this.width, this.height);
+        render() {
+            context2D.fillRect(this.x, this.y, this.width, this.height);
         }
     }
 
-    export class Bitmap extends DisplayObject {
-        private texture: Texture;
+    export class Bitmap extends DisplayObject implements IBitmap {
+        data;
+        _width;
+        _height;//todo
         private static count = 0;
+        get width(): number { return this.data.width; }
+        get height(): number { return this.data.height; }
+        set width(value) {
+            this._width = value;
+        }
+        set height(value) {
+            this._height = value;
+        }
 
         constructor(img?: string) {
-            //load texture
-            RES.getRes(img).then(value=>{
-                //this.texture = value;
-                //this.width = value.width;
-                //this.height = value.height;
-                console.log("load complete "+value);
-            })
             super(0, 0, 0, 0);
-            // var texture =loadTexture(img);
-            
+            RES.getRes(img).then((value) => {
+                this.data = value;
+                console.log(value);
+            });
+
             //generate ID
             this._id = IDs.PICTURE_ID + Bitmap.count;
             Bitmap.count++;
@@ -187,8 +166,9 @@ namespace engine {
         }
 
 
-        protected render(context: IContext) {
-            context.drawPicture(this.texture, this.x, this.y);
+        protected render() {
+            if (this.data)
+                context2D.drawImage(this.data, this.x, this.y);
         }
     }
 
@@ -206,10 +186,10 @@ namespace engine {
             TextField.count++;
         }
 
-        protected render(context: IContext) {
+        protected render() {
             //  var font = this.context.font;
             // this.context.font = this.size + "px Verdana";
-            context.fillText(this.str, this.x, this.y);
+            context2D.fillText(this.str, this.x, this.y);
             //  this.context.font = font;
         }
 
@@ -218,12 +198,10 @@ namespace engine {
 
     export class DisplayObjectContainer extends DisplayObject {
         children: DisplayObject[] = [];
-        private canvas: ICanvas;
         private static count = 0;
 
         constructor() {
-            super(0, 0, canvas.width, canvas.height);
-            this.canvas = canvas;
+            super(0, 0, 0, 0);
             this._id = IDs.CONTAINER_ID + DisplayObjectContainer.count;
             DisplayObjectContainer.count++;
         }
@@ -233,14 +211,13 @@ namespace engine {
             drawable.father = this;
         }
 
-        draw() {
-            super.draw(this.canvas.getContext2D());
+        removeChild(child: IDrawable) {
+
         }
 
         render() {
-            var self = this;
             this.children.forEach((value) => {
-                value.draw(self.canvas.getContext2D());
+                value.draw();
             });
         }
 
@@ -258,4 +235,27 @@ namespace engine {
         }
     }
 
+    export class Shape extends DisplayObjectContainer {
+        //private static count = 0;
+
+        render() {
+            this.children.forEach((value) => { value.draw() });
+        }
+
+        drawRect(x: number, y: number, width: number, height: number) {
+            this.addChild(new Rectangle(x, y, width, height));
+            this.width += width;
+            this.height += height;
+        }
+
+        hitTest(event: TouchEvent): DisplayObject[] {
+            var result;
+            this.children.forEach((value) => {
+                var temp = value.hitTest(event);
+                if (temp)
+                    result = temp;
+            })
+            return result;
+        }
+    }
 }

@@ -7,12 +7,11 @@
 	"files": [
 		"src/core/math.ts",
 		"src/core/ticker.ts",
+		"src/core/draw.ts",
 		"src/core/displaylist.ts",
+		"src/platforms/browser/draw.ts",
 		"src/core/ids.ts",
 		"src/core/touch.ts",
-		"src/core/res.ts",
-		"src/core/draw.ts",
-		"src/platforms/browser/driver.ts",
-		"src/platforms/browser/draw.ts"
+		"src/platforms/browser/driver.ts"
 	]
 }

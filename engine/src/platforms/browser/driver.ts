@@ -1,18 +1,26 @@
+//import Main from '././././test/src/Main'
 namespace engine {
     var stage;
-    export function click(x:number,y:number) {
+    export function click(x: number, y: number) {
         var clickEvent = new TouchEvent(x, y, TouchEvent.CLICK)
         var clickChain = stage.hitTest(clickEvent);
         stage.dispatchEvent("capture", clickChain, clickEvent);
         stage.dispatchEvent("bubble", clickChain, clickEvent);
     }
-    export let run = (canvas: HTMLCanvasElement) => {
 
-        canvas = document.createElement("canvas");
-        var objBody = document.getElementsByTagName("body").item(0);
-        objBody.appendChild(canvas);
-        stage = new DisplayObjectContainer();
-        let context2D = canvas.getContext("2d");
+    export let run = function (main) {
+       // canvas = document.createElement("canvas") as Canvas;
+       canvas = new Canvas();
+        canvas.data = document.getElementById('app');
+        //var objBody = document.getElementsByTagName("body").item(0);
+       // objBody.appendChild(canvas as HTMLCanvasElement);  
+
+        //canvas = new Canvas();
+        stage = main;
+        stage.width = canvas.width;
+        stage.height = canvas.height;
+        stage.createGameScene();
+        context2D = canvas.getContext('2d');
         let lastNow = Date.now();
         let frameHandler = () => {
             //时间
@@ -22,9 +30,9 @@ namespace engine {
 
             //绘制
             context2D.clearRect(0, 0, canvas.width, canvas.height);
-            context2D.save();
             stage.draw();
-            context2D.restore();
+            
+
             lastNow = now;
             window.requestAnimationFrame(frameHandler);
         }
@@ -55,11 +63,7 @@ namespace engine {
                 } catch (e) { }
             }
             window.onmouseleave = (leave) => { }
-            //stage.dispatchEvent("capture",chain,event);
-            //stage.dispatchEvent("bubble",chain,event);
         }
-
-        return stage;
-
     }
+
 }

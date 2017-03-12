@@ -1,5 +1,10 @@
 namespace engine {
+    export let context2D:IContext;
+    export let canvas: ICanvas;
+
     export interface IDrawable {
+        x:number;
+        y:number;
         width: number;
         height: number;
         localMat: MathUtil.Matrix;
@@ -14,20 +19,25 @@ namespace engine {
     }
 
     export interface IContext{
-        globalAlpha;
-        fillStyle;
-        drawPicture(tex:ITexture,x:number,y:number);
+        data:any;
+        globalAlpha:number;
+        fillStyle:string;
+        drawImage(tex:IBitmap,x:number,y:number);
         fillRect(x:number,y:number,width:number,height:number);
         setTransform(a,b,c,d,tx,ty);
         fillText(str:string, x:number, y:number);
+        clearRect(x:number,y:number,width:number,height:number);
     }
 
     export interface ICanvas{
-        getContext2D():IContext;
+        data:any;
+        width:number;
+        height:number;
+        getContext(type:string);
     }
 
-    export interface ITexture{
-        data: any;
+    export interface IBitmap {
+        data:any;
         width: number;
         height: number;
     }
