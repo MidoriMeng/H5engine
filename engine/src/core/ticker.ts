@@ -38,7 +38,7 @@ namespace engine {
     }
 
     export class Ticker {
-
+        listeners: Map<string, Ticker_Listener_Type>;
         private static instance: Ticker;
         private static count = 0;
 
@@ -50,7 +50,6 @@ namespace engine {
             return Ticker.instance;
         }
 
-        listeners: Map<string, Ticker_Listener_Type>;
 
         register(listener: Ticker_Listener_Type): string {
             var id = IDs.TICKER_ID + Ticker.count;
