@@ -11,7 +11,7 @@ namespace engine {
         }
 
         drawImage(tex: IBitmap, x: number, y: number) {
-            this.data.drawImage(tex.texture, x, y);
+            this.data.drawImage(tex.texture.data, x, y);
         }
 
         fillRect(x: number, y: number, width: number, height: number) {
@@ -44,7 +44,7 @@ namespace engine {
     export namespace RES {
         var RESOURCE_PATH = "././Resources/";
 
-        export function getRes(path: string) {
+        export function getResAsync(path: string) {
             return new Promise(function (resolve, reject) {
                 var result = new Image();
                 result.src = RESOURCE_PATH + path;
@@ -52,6 +52,13 @@ namespace engine {
                     resolve(result);
                 }
             });
+        }
+
+        export function getRes(path: string):Texture {
+            var result = new Texture();
+            result.data = new Image();
+            result.data.src = RESOURCE_PATH + path;
+            return result;
         }
     }
 

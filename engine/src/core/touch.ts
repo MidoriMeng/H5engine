@@ -7,7 +7,7 @@ namespace engine {
         hitTest(event: TouchEvent): DisplayObject[];
         dispatchEvent(type: "capture" | "bubble", chain: DisplayObject[], event: TouchEvent)
     }
-    
+
     export class TouchListener {
         type: number;
         func: Function;
@@ -25,8 +25,10 @@ namespace engine {
     export class TouchEvent {
         stageX: number;
         stageY: number;
+        localX: number;
+        localY: number;
         type: number;
-        target:any;
+        target: any;
 
         static MOUSEDOWN = 0;
         static MOUSEUP = 1;

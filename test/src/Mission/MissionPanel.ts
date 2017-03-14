@@ -14,9 +14,9 @@ class MissionPanel extends engine.DisplayObjectContainer implements Observer {
         this.textFieldList = [];
 
         this.bg = new engine.Shape();
-        this.bg.graphics.beginFill(0x000000);
-        this.bg.graphics.drawRect(0, 0, MISSIONPANEL_WIDTH, MISSIONPANEL_HEIGHT);
-        this.bg.graphics.endFill();
+        this.bg.beginFill("#000000");
+        this.bg.drawRect(0, 0, MISSIONPANEL_WIDTH, MISSIONPANEL_HEIGHT);
+        this.bg.endFill();
         this.bg.alpha = 0.5;
         this.addChild(this.bg);
     }
@@ -87,11 +87,11 @@ class MissionPanel extends engine.DisplayObjectContainer implements Observer {
                 newText.text = mission.getName() + " (" + mission.getStatusString() + ")";
                 this.textFieldList.push(newText);
                 newText.x = LINE_SPACE;
-                newText.y = LINE_SPACE + Number(index) * newText.size*1.1;
+                newText.y = LINE_SPACE + Number(index) * newText.fontSize * 1.1;
                 this.addChild(newText);
             }
         }
     }
 
-    
+
 }

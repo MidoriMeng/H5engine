@@ -15,9 +15,9 @@ class HeroPanel extends engine.DisplayObjectContainer {
         this.hero = hero;
 
         this.bg = new engine.Shape();
-        this.bg.graphics.beginFill(0x000000);
-        this.bg.graphics.drawRect(0, 0, HeroPanel.DIALOG_WIDTH, HeroPanel.DIALOG_HEIGHT);
-        this.bg.graphics.endFill();
+        this.bg.beginFill("#FFFFFF");
+        this.bg.drawRect(0, 0, HeroPanel.DIALOG_WIDTH, HeroPanel.DIALOG_HEIGHT);
+        this.bg.endFill();
         this.bg.alpha = 0.5;
         this.addChild(this.bg);
 
@@ -29,11 +29,11 @@ class HeroPanel extends engine.DisplayObjectContainer {
 
         var appearance = this.hero;
         appearance.x = HeroPanel.ALIGN;
-        appearance.y = HeroPanel.ALIGN * 2 + heroName.size;
+        appearance.y = HeroPanel.ALIGN * 2 + heroName.fontSize;
         this.addChild(appearance);
 
         //closePanel
-        this.close = new engine.Bitmap(RES.getRes("error_png"));
+        this.close = new engine.Bitmap(engine.RES.getRes("error.png"));
         this.close.scaleX = 0.63;
         this.close.scaleY = 0.63;
         this.close.x = HeroPanel.DIALOG_WIDTH - this.close.width;
@@ -41,14 +41,14 @@ class HeroPanel extends engine.DisplayObjectContainer {
         this.addChild(this.close);
 
         //show equipments
-        var equipY = HeroPanel.ALIGN * 2 + heroName.size;
+        var equipY = HeroPanel.ALIGN * 2 + heroName.fontSize;
         this.heroEquips = new Array(equipmentType.length);
         for (var i = 0; i < this.heroEquips.length; i++) {
             var e = this.heroEquips[i];
             if (this.hero.equipment[i])
                 e = this.hero.equipment[i];
             else {
-                e = new engine.Bitmap(RES.getRes("emptyEquip_png"));
+                e = new engine.Bitmap(engine.RES.getRes("emptyEquip.png"));
             }
             e.x = HeroPanel.EQUIPX;
             e.y = equipY;
@@ -63,7 +63,7 @@ class HeroPanel extends engine.DisplayObjectContainer {
         }
 
         //show skills
-        var skillY = HeroPanel.ALIGN * 2 + heroName.size + appearance.height;
+        var skillY = HeroPanel.ALIGN * 2 + heroName.fontSize + appearance.height;
         var skillX = HeroPanel.ALIGN;
         this.heroSkills = new Array();
         for (var i = 0; i < this.hero.skills.length; i++) {
@@ -71,7 +71,7 @@ class HeroPanel extends engine.DisplayObjectContainer {
             if (this.hero.skills[i])
                 skill = this.hero.skills[i];
             else {
-                skill = new engine.Bitmap(RES.getRes("emptyEquip_png"));
+                skill = new engine.Bitmap(engine.RES.getRes("emptyEquip.png"));
             }
             skill.x = skillX;
             skill.y = skillY;
@@ -91,7 +91,7 @@ class HeroPanel extends engine.DisplayObjectContainer {
         equipPanel.touchEnabled = true;
         equipPanel.addEventListener(engine.TouchEvent.CLICK,()=> {
             this.removeChild(equipPanel);
-        },this);
+        });
     }
 
 
@@ -107,9 +107,9 @@ class DetailPanel extends engine.DisplayObjectContainer {
         this.obj = equip;
 
         var bg = new engine.Shape();
-        bg.graphics.beginFill(0x000000);
-        bg.graphics.drawRect(0, 0, DetailPanel.WIDTH, DetailPanel.HEIGHT);
-        bg.graphics.endFill();
+        bg.beginFill("#000000");
+        bg.drawRect(0, 0, DetailPanel.WIDTH, DetailPanel.HEIGHT);
+        bg.endFill();
         //bg.alpha = 0.5;
         this.addChild(bg);
 
@@ -120,10 +120,10 @@ class DetailPanel extends engine.DisplayObjectContainer {
         this.addChild(equipName);
 
         //var appearance = this.equip;
-        var appearance = new engine.Bitmap(RES.getRes(this.obj.appearance));
+        var appearance = new engine.Bitmap(engine.RES.getRes(this.obj.appearance));
         //var appearance = JSON.parse(JSON.stringify(this.equip));
         appearance.x = DetailPanel.ALIGN;
-        appearance.y = DetailPanel.ALIGN * 2 + equipName.size;
+        appearance.y = DetailPanel.ALIGN * 2 + equipName.fontSize;
         this.addChild(appearance);
 
         //show properties
@@ -134,23 +134,22 @@ class DetailPanel extends engine.DisplayObjectContainer {
             var atkp = new engine.TextField;
             atkp.text = "attack + " + atk;
             atkp.x = DetailPanel.ALIGN * 2 + appearance.width;
-            atkp.y = DetailPanel.ALIGN * 2 + equipName.size;
+            atkp.y = DetailPanel.ALIGN * 2 + equipName.fontSize;
             this.addChild(atkp);
         }
         if (def) {
             var defp = new engine.TextField;
             defp.text = "defence + " + def;
             defp.x = DetailPanel.ALIGN * 2 + appearance.width;
-            defp.y = DetailPanel.ALIGN * 3 + equipName.size * 2;
+            defp.y = DetailPanel.ALIGN * 3 + equipName.fontSize * 2;
             this.addChild(defp);
         }
         if (power) {
             var powp = new engine.TextField;
             powp.text = "power   " + power;
             powp.x = DetailPanel.ALIGN * 2 + appearance.width;
-            powp.y = DetailPanel.ALIGN * 4 + equipName.size * 3;
+            powp.y = DetailPanel.ALIGN * 4 + equipName.fontSize * 3;
             this.addChild(powp);
-
         }
     }
 

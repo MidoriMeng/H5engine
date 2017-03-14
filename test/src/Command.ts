@@ -47,7 +47,6 @@ class FightCommand implements Command {
 
         engine.setTimeout(() => {
             if (!this._hasBeenCancelled) {
-                engine.Event.release(event);
                 callback();
             }
         }, 500);
@@ -57,7 +56,7 @@ class FightCommand implements Command {
     cancel(callback: Function) {
         console.log("脱离战斗")
         this._hasBeenCancelled = true;
-        engine.Ticker.getInstance().setTimeout(function () {
+        engine.setTimeout(function () {
             callback();
         }, 100)
 

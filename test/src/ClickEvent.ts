@@ -29,7 +29,7 @@ class ClickEvent implements Observer {
             if (!npc.isTalking) {
                 this.commandList.cancel();
                 this.commandList.addCommand(new WalkCommand(npc.x, npc.y));
-                this.commandList.addCommand(new TalkCommand(npc.id));
+                this.commandList.addCommand(new TalkCommand(npc.NPCid));
                 this.commandList.execute();
             }
         } else if (event.target instanceof Dialog) {

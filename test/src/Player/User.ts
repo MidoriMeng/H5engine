@@ -61,7 +61,7 @@ class GeneralFigures extends engine.Bitmap {
         super();
         this.name = appearance;
         this.appearance = appearance;
-        this.texture = RES.getRes(appearance);
+        this.texture = engine.RES.getRes(appearance);
     }
     get atk(): number {
         return 0;
@@ -134,7 +134,7 @@ class Hero extends GeneralEquip{
         this.skills = new Array(Hero.SKILL_NUMBER);
     }
 
-    @logger
+    //@logger
     addEquip(equip: Equipment) {
         this.equipment[equip.type] = equip;
     }

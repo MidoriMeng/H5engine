@@ -19,7 +19,7 @@ namespace engine {
         stage = main;
         stage.width = canvas.width;
         stage.height = canvas.height;
-        stage.createGameScene();
+        stage.createGameScene(canvas);
         context2D = canvas.getContext('2d');
         let lastNow = Date.now();
         let frameHandler = () => {

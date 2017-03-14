@@ -46,8 +46,8 @@ class GameStateMachine {
         this.stateList[this.stateList.length] = state;
         state.onInit();
     }
-    runMachine(deltaTime: number): boolean {
-        console.log("deltaTime: " + deltaTime);
+    
+    runMachine =(deltaTime: number)=> {
 
         if (this.stateList) {
             for (var index in this.stateList) {

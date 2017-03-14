@@ -30,9 +30,9 @@ class Dialog extends engine.DisplayObjectContainer {
         this.personID=speakerID;
         //背景
         this.bg = new engine.Shape();
-        this.bg.graphics.beginFill(0x000000);
-        this.bg.graphics.drawRect(0, 0, DIALOG_WIDTH, DIALOG_HEIGHT);
-        this.bg.graphics.endFill();
+        this.bg.beginFill("#000000");
+        this.bg.drawRect(0, 0, DIALOG_WIDTH, DIALOG_HEIGHT);
+        this.bg.endFill();
         this.bg.alpha = 0.5;
         this.addChild(this.bg);
         //头像
@@ -44,8 +44,8 @@ class Dialog extends engine.DisplayObjectContainer {
         this.speaker = new engine.TextField;
         this.speaker.text = obj.name;
         this.speaker.bold = true;
-        this.speaker.textColor = 0xffffff;
-        this.speaker.size = DIALOG_NAME_SIZE;
+        this.speaker.color = "#FFFFFF";
+        this.speaker.fontSize = DIALOG_NAME_SIZE;
         this.speaker.x = DIALOG_INTERVAL * 2 + DIALOG_PORTRAIT_SIZE;
         this.speaker.y = DIALOG_INTERVAL;
         this.addChild(this.speaker);
@@ -53,7 +53,7 @@ class Dialog extends engine.DisplayObjectContainer {
         this.strs = dialogComponents;
         this.component = new engine.TextField;
         this.component.text = dialogComponents[this.curIndex];
-        this.component.size = DIALOG_SIZE;
+        this.component.fontSize = DIALOG_SIZE;
         this.component.x = this.speaker.x;
         this.component.y = DIALOG_INTERVAL * 2 + this.speaker.height;
         this.component.width = DIALOG_WIDTH - 3 * DIALOG_INTERVAL - DIALOG_PORTRAIT_SIZE;

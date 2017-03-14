@@ -5,10 +5,10 @@ interface Dialogable {
     //cur dialog index
 }
 type appearance_4 = {
-    NORTH: engine.Texture,
-    SOUTH: engine.Texture,
-    EAST: engine.Texture,
-    WEST: engine.Texture
+    NORTH:engine.Texture,
+    SOUTH:engine.Texture,
+    EAST:engine.Texture,
+    WEST:engine.Texture
 }
 interface Displayable {
     appearances: appearance_4;

@@ -34,16 +34,16 @@ namespace MAP {
 
         loadNPCs() {
             var appearances = {
-                NORTH: engine.RES.getRes("Actor1_12_png"), SOUTH: engine.RES.getRes("Actor1_02_png"),
-                EAST: engine.RES.getRes("Actor1_09_png"), WEST: engine.RES.getRes("actor1_06_png")
+                NORTH: engine.RES.getRes("Actor1_12.png"), SOUTH: engine.RES.getRes("Actor1_02.png"),
+                EAST: engine.RES.getRes("Actor1_09.png"), WEST: engine.RES.getRes("actor1_06.png")
             };
             var npc_001 = new NPC("001", "npc1",
                 appearances,
-                DIRECTION.SOUTH, "Actor1_jpg");
+                DIRECTION.SOUTH, "Actor1.jpg");
             npc_001.setPosition(new Vector2_p48(5, 5));
             var npc_002 = new NPC("002", "npc2",
                 appearances,
-                DIRECTION.SOUTH, "Actor1_jpg");
+                DIRECTION.SOUTH, "Actor1.jpg");
             npc_002.setPosition(new Vector2_p48(8, 8));
             this.curNPCList.push(npc_001);
             this.curNPCList.push(npc_002);
@@ -56,7 +56,7 @@ namespace MAP {
 
         public getNPC(id: string): NPC {
             for (var index in this.curNPCList) {
-                if (this.curNPCList[index].id == id)
+                if (this.curNPCList[index].NPCid == id)
                     return this.curNPCList[index];
             }
         }

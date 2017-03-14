@@ -55,16 +55,16 @@ class Player extends engine.DisplayObjectContainer implements EventEmitter {
         this.curState = new PLAYER.IdleState(this, null);
         this.orientation = DIRECTION.EAST;
         this.missionList = [];
-        this.appearance = new engine.Bitmap(RES.getRes("actor1_05_png"));
+        this.appearance = new engine.Bitmap(engine.RES.getRes("actor1_05.png"));
         this.animationList = {
-            "idle_west": ["actor1_06_png"],
-            "idle_east": ["Actor1_09_png"],
-            "idle_north": ["Actor1_12_png"],
-            "idle_south": ["Actor1_02_png"],
-            "walk_west": ["actor1_05_png", "actor1_06_png", "Actor1_07_png", "actor1_06_png"],
-            "walk_east": ["Actor1_08_png", "Actor1_09_png", "Actor1_10_png", "Actor1_09_png"],
-            "walk_north": ["Actor1_11_png", "Actor1_12_png", "Actor1_13_png", "Actor1_12_png"],
-            "walk_south": ["Actor1_01_png", "Actor1_02_png", "Actor1_03_png", "Actor1_02_png"]
+            "idle_west": ["actor1_06.png"],
+            "idle_east": ["Actor1_09.png"],
+            "idle_north": ["Actor1_12.png"],
+            "idle_south": ["Actor1_02.png"],
+            "walk_west": ["actor1_05.png", "actor1_06.png", "Actor1_07.png", "actor1_06.png"],
+            "walk_east": ["Actor1_08.png", "Actor1_09.png", "Actor1_10.png", "Actor1_09.png"],
+            "walk_north": ["Actor1_11.png", "Actor1_12.png", "Actor1_13.png", "Actor1_12.png"],
+            "walk_south": ["Actor1_01.png", "Actor1_02.png", "Actor1_03.png", "Actor1_02.png"]
         };
         this.curAnimation = new Animation(this
             .animationList["idle_east"],

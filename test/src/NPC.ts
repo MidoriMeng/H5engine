@@ -1,6 +1,6 @@
 
 class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dialogable, Displayable {
-    id: string;//三位
+    NPCid: string;//三位
     name: string;
 
     appearances: appearance_4;
@@ -17,14 +17,14 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
     constructor(id: string, name: string,
         appearances: appearance_4, orientation: DIRECTION,
         portrait: string) {
-        super(canvas);
-        this.id = id;
+        super();
+        this.NPCid = id;
         this.name = name;
 
         this.appearances = appearances;
         this.changeOrientation(orientation);
 
-        this.portrait = new engine.Bitmap(RES.getRes(portrait));
+        this.portrait = new engine.Bitmap(engine.RES.getRes(portrait));
         this.touchEnabled = true;
 
         var service = MissionService.getInstance();
@@ -33,7 +33,7 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
         service.getMissionByCustomRule(this.rule_all_interactableFirst, this);
 
         //show emoji
-        this.emoji = new engine.Bitmap(RES.getRes("empty_png"));
+        this.emoji = new engine.Bitmap(engine.RES.getRes("empty.png"));
         this.showEmoji();
         this.addChild(this.emoji);
 
@@ -78,7 +78,7 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
     }*/
 
     showDialog() {
-        UIService.getInstance().displayDialog(new Dialog(this, this.missionList[0].description, this.missionList[0], this.id));
+        UIService.getInstance().displayDialog(new Dialog(this, this.missionList[0].description, this.missionList[0], this.NPCid));
         //this.removeEventListener(engine.TouchEvent.CLICK, this.showDialog, this);
     }
 
@@ -88,7 +88,7 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
                 //var pattern = new RegExp(this.id, "\d{3}");
                 var fromId = missions[index].getFromID();
                 var toId = missions[index].getToID();
-                if (self.id == fromId || self.id == toId) {
+                if (self.NPCid == fromId || self.NPCid == toId) {
                     self.missionList.push(missions[index]);
                 }
             }
@@ -112,7 +112,7 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
             //var pattern = new RegExp(this.id, "\d{3}");
             var fromId = missions[index].getFromID();
             var toId = missions[index].getToID();
-            if (self.id == fromId || self.id == toId) {
+            if (self.NPCid == fromId || self.NPCid == toId) {
                 self.missionList.push(missions[index]);
             }
         }
@@ -124,7 +124,7 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
     }
 
     onChange(mission: Mission) {
-        if (mission.getFromID() == this.id || mission.getToID() == this.id) {
+        if (mission.getFromID() == this.NPCid || mission.getToID() == this.NPCid) {
             this.missionList[mission.id] = mission;
             this.sort();
             this.showEmoji();
@@ -133,7 +133,7 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
     }
 
     sort() {
-        var id = this.id;
+        var id = this.NPCid;
         this.missionList.sort(function (a, b) {
             var valueA, valueB;
             valueB = (
@@ -158,29 +158,29 @@ class NPC extends engine.DisplayObjectContainer implements MissionObserver, Dial
             var toID = this.missionList[0].getToID();
             switch (this.missionList[0].status) {
                 case MissionStatus.ACCEPTABLE:
-                    if (fromID == this.id)
-                        this.emoji.texture = RES.getRes("Balloon_exclamation_png");
+                    if (fromID == this.NPCid)
+                        this.emoji.texture = engine.RES.getRes("Balloon_exclamation.png");
                     break;
                 case MissionStatus.DURING:
-                    if (toID == this.id)
-                        this.emoji.texture = RES.getRes("Balloon_questionMark_gray_png");
+                    if (toID == this.NPCid)
+                        this.emoji.texture = engine.RES.getRes("Balloon_questionMark_gray.png");
                     else
-                        this.emoji.texture = RES.getRes("empty_png");
+                        this.emoji.texture = engine.RES.getRes("empty.png");
                     break;
                 case MissionStatus.SUBMITTABLE:
-                    if (toID == this.id)
-                        this.emoji.texture = RES.getRes("Balloon_questionMark_png");
+                    if (toID == this.NPCid)
+                        this.emoji.texture = engine.RES.getRes("Balloon_questionMark.png");
                     else
-                        this.emoji.texture = RES.getRes("empty_png");
+                        this.emoji.texture = engine.RES.getRes("empty.png");
                     break;
                 case MissionStatus.UNACCEPTABLE:
-                    if (fromID == this.id)
-                        this.emoji.texture = RES.getRes("Balloon_exclamation_gray_png");
+                    if (fromID == this.NPCid)
+                        this.emoji.texture = engine.RES.getRes("Balloon_exclamation_gray.png");
                     else
-                        this.emoji.texture = RES.getRes("empty_png");
+                        this.emoji.texture = engine.RES.getRes("empty.png");
                     break;
                 default:
-                    this.emoji.texture = RES.getRes("empty_png");
+                    this.emoji.texture = engine.RES.getRes("empty.png");
             }
         }
         this.emoji.y = -this.emoji.height;

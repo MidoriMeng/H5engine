@@ -8,13 +8,13 @@ namespace MAP {
             //background
             [
                 { texture: null, speed: 1 },//0:null
-                { texture: "outside_bg_grass_png", speed: 1 }//1:grassland???
+                { texture: "outside_bg_grass.png", speed: 1 }//1:grassland???
                 //other backgrounds
             ],
             //obj
             [
                 { texture: null, speed: 1 },//0:null
-                { texture: "outside_sc_shrub_png", speed: 0 }//1:shrub
+                { texture: "outside_sc_shrub.png", speed: 0 }//1:shrub
                 //other objects
             ]
         ]

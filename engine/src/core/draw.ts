@@ -11,11 +11,9 @@ namespace engine {
         globalMat: MathUtil.Matrix;
         father: IDrawable;
         draw(context: Context);
-        transform(x: number, y: number);
-        rotate(eularDegree: number);
-        scale(x: number, y: number);
         alpha: number;
         color: string;
+        touchEnabled:boolean;
     }
 
     export interface IContext{
@@ -38,8 +36,10 @@ namespace engine {
     }
 
     export interface IBitmap {
-        texture:any;
-        width: number;
-        height: number;
+        texture:ITexture;
+    }
+
+    export interface ITexture{
+        data:any;
     }
 }

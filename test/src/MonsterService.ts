@@ -6,7 +6,7 @@ class Monster extends engine.DisplayObjectContainer {
         super();
         this.name = "slime";
         this.status = MonsterStatus.ALIVE;
-        this.appearance = new engine.Bitmap(RES.getRes("Slime_png"));
+        this.appearance = new engine.Bitmap(engine.RES.getRes("Slime.png"));
         this.addChild(this.appearance);
         this.touchEnabled = true;
     }
@@ -37,14 +37,14 @@ class MonsterService extends engine.DisplayObjectContainer implements EventEmitt
         super();
         this.observerList = new Array<Observer>();
         this.monsterList = new Array<Monster>();
-        this.addEventListener(engine.TouchEvent.CLICK, this.onTap, this);
+        this.addEventListener(engine.TouchEvent.CLICK, this.onTap);
     }
 
     onTap(e: engine.TouchEvent) {
         console.log("tap @ monsterService");
         var monster = e.target;
         //animation
-        var slash = new engine.Bitmap(RES.getRes("Slash_png"));
+        var slash = new engine.Bitmap(engine.RES.getRes("Slash.png"));
         slash.x = monster.x + e.localX - slash.width / 2;
         slash.y = monster.y + e.localY - slash.height / 2;
         //console.log(slash.x, slash.y);
@@ -53,7 +53,7 @@ class MonsterService extends engine.DisplayObjectContainer implements EventEmitt
             this.removeChild(slash);
             //kill
             this.killMonster(monster);
-        }, this,200);
+        },200);
 
 
     }

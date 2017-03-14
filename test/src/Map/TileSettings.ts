@@ -23,6 +23,9 @@ namespace MAP {
         passSpeed: number;
         constructor(data: { texture: string, speed: number }, position?: Vector2_p48) {
             super();
+            if(this.id == "027"){//todo delete
+                console.log("027");
+            }
             if (position) {
                 this.x = position.x;
                 this.y = position.y;
@@ -51,13 +54,16 @@ namespace MAP {
         }
     }
 
-    var error = { texture: "error_png", speed: 0 };
+    var error = { texture: "error.png", speed: 0 };
 
     /**生成特定图块 */
     export function generateTile(sceneType: SCENE_TYPE, type: TILE_TYPE, index: number): Tile {
         if (index == -1)
             return new Tile(error);
-        var result = new Tile(tileJson[sceneType][type][index]);
+        if (type == 1 && index == 0)//todo delete
+            console.log("stop");
+        var prefab = MAP.tileJson[sceneType][type][index];
+        var result = new Tile(prefab);
         if (result)
             return result;
         else

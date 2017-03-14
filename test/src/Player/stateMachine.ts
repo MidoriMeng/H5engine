@@ -93,8 +93,7 @@ namespace PLAYER {
                 var funcChange = function (): void {
                     //console.log(this.x);
                 }
-                var tween = engine.Tween.get(this.context, { onChange: funcChange, onChangeObj: this.context });
-
+                var tween = new engine.Tween(this.context);
                 tween.to({
                     x: this.targetPosition.x,
                     y: this.targetPosition.y

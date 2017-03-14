@@ -1,8 +1,12 @@
 namespace engine {
 
     export abstract class DisplayObject implements Citizen, IDrawable, touchable {
-        x: number;
-        y: number;
+        _x: number;
+        _y: number;
+        _scaleX: number;
+        _scaleY: number;
+        _rotate: number;
+
         width: number;
         height: number;
         father: IDrawable;
@@ -16,6 +20,51 @@ namespace engine {
 
         get id(): string {
             return this._id;
+        }
+
+        get x(): number {
+            return this._x;
+        }
+        get y(): number {
+            return this._y;
+        }
+        get scaleX(): number {
+            return this._scaleX;
+        }
+        get scaleY(): number {
+            return this._scaleY;
+        }
+        get rotate(): number {
+            return this._rotate;
+        }
+
+        set x(value) {
+            this._x = value;
+            this.calculateMat();
+        }
+        set y(value) {
+            this._y = value;
+            this.calculateMat();
+        }
+        set scaleX(value) {
+            this._scaleX = value;
+            this.calculateMat();
+        }
+        set scaleY(value) {
+            this._scaleY = value;
+            this.calculateMat();
+        }
+        set rotate(value) {
+            this._rotate = value;
+            this.calculateMat();
+        }
+
+        protected calculateMat() {
+            var transMat = MathUtil.move2Mat(this._x, this._y);
+            var rotateMat = MathUtil.rotate2Mat(this.rotate);
+            var scaleMat = MathUtil.scale2Mat(this._scaleX, this._scaleY);
+            this.localMat = transMat.multiply(rotateMat).multiply(scaleMat)
+                .multiply(MathUtil.identityMatrix(3));
         }
 
         constructor(x: number, y: number, width: number, height: number) {
@@ -53,41 +102,27 @@ namespace engine {
 
         protected render() { }
 
-        rotate(eularDegree: number) {
-            var mat = MathUtil.rotate2Mat(eularDegree);
-            this.localMat = mat.multiply(this.localMat);
-        }
-
-        transform(x: number, y: number) {
-            var mat = MathUtil.move2Mat(x, y);
-            this.localMat = mat.multiply(this.localMat);
-        }
-
-        scale(x: number, y: number) {
-            var mat = MathUtil.scale2Mat(x, y);
-            this.localMat = mat.multiply(this.localMat);
-        }
-
         hitTest(event: TouchEvent): DisplayObject[] {
-            if (!this.touchEnabled)
-                return null;
-            //矩阵逆变换
-            var inverseMat = this.globalMat.inverse();
-            var localClickMat = new MathUtil.Matrix(3, 1);
-            localClickMat.data[0][0] = event.stageX;
-            localClickMat.data[1][0] = event.stageY;
-            localClickMat.data[2][0] = 1;
-            localClickMat = inverseMat.multiply(localClickMat);
-            var localClickX = localClickMat.a - this.x;
-            var localClickY = localClickMat.b - this.y;
-            if (0 < localClickX &&
-                localClickX < this.width &&
-                0 < localClickY &&
-                localClickY < this.height) {
-                event.target = this;
-                return [this];
+            if (this.touchEnabled || this.father.touchEnabled) {
+                //矩阵逆变换
+                var inverseMat = this.globalMat.inverse();
+                var localClickMat = new MathUtil.Matrix(3, 1);
+                localClickMat.data[0][0] = event.stageX;
+                localClickMat.data[1][0] = event.stageY;
+                localClickMat.data[2][0] = 1;
+                localClickMat = inverseMat.multiply(localClickMat);
+                var localClickX = localClickMat.a - this.x;
+                var localClickY = localClickMat.b - this.y;
+                if (0 < localClickX &&
+                    localClickX < this.width &&
+                    0 < localClickY &&
+                    localClickY < this.height) {
+                    event.target = this;
+                    event.localX = localClickX;
+                    event.localY = localClickY;
+                    return [this];
+                }
             }
-
             else return null;
         }
 
@@ -149,6 +184,7 @@ namespace engine {
                 this._width = value;
             }
         }
+
         set height(value) {
             if (this.texture) {
                 this.texture.height = value;
@@ -156,34 +192,40 @@ namespace engine {
             }
         }
 
-        constructor(img?: string) {
+        constructor(texture?) {
             super(0, 0, 0, 0);
-            RES.getRes(img).then((value) => {
-                this.texture = value;
-                console.log(value);
-            });
-
+            this.texture = texture;
             //generate ID
             this._id = IDs.PICTURE_ID + Bitmap.count;
             Bitmap.count++;
+            if (this._id == "02108") {
+                console.log("hhh");
+            }
 
         }
 
 
         protected render() {
-            //todo 应用数值指定的变换
-            if (this.texture)
-                context2D.drawImage(this.texture, this.x, this.y);
+            try {
+                if (this.texture)
+                    context2D.drawImage(this.texture.data, this.x, this.y);
+            } catch (e) { }
         }
     }
 
+    export class Texture extends DisplayObject implements ITexture {
+        data;
+        constructor() {
+            super(0, 0, 0, 0);
+        }
+    }
     export class TextField extends DisplayObject {
         // size: number;
         //maxWidth: number;
-        fontSize:number = 15;
+        fontSize: number = 15;
         text: string;
         private static count = 0;
-        
+        bold: boolean = false;
 
         constructor() {
             super(0, 0, 0, 0);
@@ -194,7 +236,7 @@ namespace engine {
 
         protected render() {
             //  var font = this.context.font;
-             context2D.font = this.fontSize + "px Verdana";
+            context2D.font = (this.bold ? "bold " : "") + this.fontSize + "px Verdana";
             context2D.fillText(this.text, this.x, this.y);
             //  this.context.font = font;
         }
@@ -210,6 +252,7 @@ namespace engine {
             super(0, 0, 0, 0);
             this._id = IDs.CONTAINER_ID + DisplayObjectContainer.count;
             DisplayObjectContainer.count++;
+            this.touchEnabled = true;
         }
 
         addChild(drawable: DisplayObject) {
