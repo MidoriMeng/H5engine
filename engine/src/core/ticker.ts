@@ -1,28 +1,31 @@
 namespace engine {
 
     export type Ticker_Listener_Type = (deltaTime?: number) => void;
+    export let FPS = 60;
 
-    export function setTimeout(func: Function, delayTime: number) {
+    export function setTimeout(func: Function, delayTime: number): string {
         var ticker = Ticker.getInstance();
         var passedTime = 0;
         var delayFunc = (delta) => {
             passedTime += delta;
             if (passedTime >= delayTime) {
                 func();
-                ticker.unregister(delayFunc);
+                ticker.unregister(key);
             }
 
         }
-        ticker.register(delayFunc);
+        var key = ticker.register(delayFunc);
+        return key;
     }
 
-    export function setInterval(func: Function, delayTime: number): number {
+    /**注册一个每隔delayTime执行一次的ticker并返回它的key */
+    export function setInterval(func: Function, delayTime: number): string {
         var passedTime = 0;
         var ticker = Ticker.getInstance();
         var delayFunc = (delta) => {
             passedTime += delta;
             if (passedTime >= delayTime) {
-                func();
+                func(delta);
                 passedTime -= delayTime;
             }
 
@@ -30,39 +33,40 @@ namespace engine {
         return ticker.register(delayFunc);
     }
 
-    export function clearInterval(key: number) {
+    export function clearInterval(key: string) {
         Ticker.getInstance().unregister(key);
     }
 
     export class Ticker {
 
         private static instance: Ticker;
+        private static count = 0;
 
         static getInstance() {
             if (!Ticker.instance) {
                 Ticker.instance = new Ticker();
+                Ticker.instance.listeners = new Map<string, Ticker_Listener_Type>();
             }
             return Ticker.instance;
         }
 
-        listeners: Ticker_Listener_Type[] = [];
+        listeners: Map<string, Ticker_Listener_Type>;
 
-        register(listener: Ticker_Listener_Type): number {
-            this.listeners.push(listener);
-            return this.listeners.indexOf(listener);
+        register(listener: Ticker_Listener_Type): string {
+            var id = IDs.TICKER_ID + Ticker.count;
+            this.listeners.set(id, listener);
+            Ticker.count++;
+            return id;
         }
 
-        unregister(input: Ticker_Listener_Type | number) {
-            if (input instanceof Number) {
-                this.listeners.splice(input, 1);
-            } else {
-                var index = this.listeners.indexOf(input);
-                this.listeners.splice(index, 1);
+        unregister(key: string) {
+            if(this.listeners.has(key)){
+                this.listeners.delete(key);
             }
         }
 
         notify(deltaTime: number) {
-            for (let listener of this.listeners) {
+            for (let [key,listener] of this.listeners) {
                 listener(deltaTime);
             }
         }

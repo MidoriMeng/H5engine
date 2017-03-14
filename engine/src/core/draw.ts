@@ -22,6 +22,7 @@ namespace engine {
         data:any;
         globalAlpha:number;
         fillStyle:string;
+        font:string;
         drawImage(tex:IBitmap,x:number,y:number);
         fillRect(x:number,y:number,width:number,height:number);
         setTransform(a,b,c,d,tx,ty);
@@ -37,7 +38,7 @@ namespace engine {
     }
 
     export interface IBitmap {
-        data:any;
+        texture:any;
         width: number;
         height: number;
     }

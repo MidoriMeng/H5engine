@@ -118,8 +118,6 @@ namespace engine {
         endFill() { }
     }
 
-
-
     class ShapeDisplayObject extends DisplayObject {
         draw() {
             super.draw();
@@ -139,23 +137,29 @@ namespace engine {
     }
 
     export class Bitmap extends DisplayObject implements IBitmap {
-        data;
-        _width;
-        _height;//todo
+        texture;
+        private _width;
+        private _height;
         private static count = 0;
-        get width(): number { return this.data.width; }
-        get height(): number { return this.data.height; }
+        get width(): number { return this.texture.width; }
+        get height(): number { return this.texture.height; }
         set width(value) {
-            this._width = value;
+            if (this.texture) {
+                this.texture.width = value;
+                this._width = value;
+            }
         }
         set height(value) {
-            this._height = value;
+            if (this.texture) {
+                this.texture.height = value;
+                this._height = value;
+            }
         }
 
         constructor(img?: string) {
             super(0, 0, 0, 0);
             RES.getRes(img).then((value) => {
-                this.data = value;
+                this.texture = value;
                 console.log(value);
             });
 
@@ -167,29 +171,31 @@ namespace engine {
 
 
         protected render() {
-            if (this.data)
-                context2D.drawImage(this.data, this.x, this.y);
+            //todo 应用数值指定的变换
+            if (this.texture)
+                context2D.drawImage(this.texture, this.x, this.y);
         }
     }
 
     export class TextField extends DisplayObject {
         // size: number;
         //maxWidth: number;
-        str: string;
+        fontSize:number = 15;
+        text: string;
         private static count = 0;
+        
 
-        constructor(x: number, y: number, str: string) {
-            super(x, y, str.length * 15, 20);
-            this.str = str;
-            //  this.size = size;
+        constructor() {
+            super(0, 0, 0, 0);
             this._id = IDs.TEXT_ID + TextField.count;
+            this.height = 20;//todo
             TextField.count++;
         }
 
         protected render() {
             //  var font = this.context.font;
-            // this.context.font = this.size + "px Verdana";
-            context2D.fillText(this.str, this.x, this.y);
+             context2D.font = this.fontSize + "px Verdana";
+            context2D.fillText(this.text, this.x, this.y);
             //  this.context.font = font;
         }
 
@@ -211,8 +217,13 @@ namespace engine {
             drawable.father = this;
         }
 
-        removeChild(child: IDrawable) {
+        removeChild(child: DisplayObject) {
+            var index = this.children.indexOf(child);
+            this.children.splice(index, 1);
+        }
 
+        removeChildren() {
+            this.children.splice(0);
         }
 
         render() {
