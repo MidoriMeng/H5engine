@@ -1,11 +1,11 @@
 namespace engine {
 
     export abstract class DisplayObject implements Citizen, IDrawable, touchable {
-        _x: number;
-        _y: number;
-        _scaleX: number;
-        _scaleY: number;
-        _rotate: number;
+        protected _x: number;
+        protected _y: number;
+        protected _scaleX: number;
+        protected _scaleY: number;
+        protected _rotate: number;
 
         width: number;
         height: number;
@@ -68,8 +68,11 @@ namespace engine {
         }
 
         constructor(x: number, y: number, width: number, height: number) {
-            this.x = x;
-            this.y = y;
+            this._x = x;
+            this._y = y;
+            this._scaleX = 1;
+            this._scaleY = 1;
+            this._rotate = 0;
             this.width = width;
             this.height = height;
             this.localMat = MathUtil.identityMatrix(3);
@@ -111,15 +114,15 @@ namespace engine {
                 localClickMat.data[1][0] = event.stageY;
                 localClickMat.data[2][0] = 1;
                 localClickMat = inverseMat.multiply(localClickMat);
-                var localClickX = localClickMat.a - this.x;
-                var localClickY = localClickMat.b - this.y;
-                if (0 < localClickX &&
-                    localClickX < this.width &&
-                    0 < localClickY &&
-                    localClickY < this.height) {
+                var localX = localClickMat.data[0][0];
+                var localY= localClickMat.data[1][0];
+                if (0 < localX &&
+                    localX < this.width &&
+                    0 < localY &&
+                    localY < this.height) {
                     event.target = this;
-                    event.localX = localClickX;
-                    event.localY = localClickY;
+                    event.localX = localX;
+                    event.localY = localY;
                     return [this];
                 }
             }
@@ -167,7 +170,7 @@ namespace engine {
         height: number;
 
         render() {
-            context2D.fillRect(this.x, this.y, this.width, this.height);
+            context2D.fillRect(0, 0, this.width, this.height);
         }
     }
 
@@ -208,7 +211,7 @@ namespace engine {
         protected render() {
             try {
                 if (this.texture)
-                    context2D.drawImage(this.texture.data, this.x, this.y);
+                    context2D.drawImage(this.texture.data, 0, 0);
             } catch (e) { }
         }
     }
@@ -237,7 +240,7 @@ namespace engine {
         protected render() {
             //  var font = this.context.font;
             context2D.font = (this.bold ? "bold " : "") + this.fontSize + "px Verdana";
-            context2D.fillText(this.text, this.x, this.y);
+            context2D.fillText(this.text, 0, 0);
             //  this.context.font = font;
         }
 

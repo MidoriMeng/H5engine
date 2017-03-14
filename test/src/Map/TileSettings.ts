@@ -1,9 +1,4 @@
 namespace MAP {
-    //???依赖：tomorrow；requirejs
-    //???export
-    //???png
-    //:指法，鼠标
-    //
     export const enum SCENE_TYPE {
         outside
     }
@@ -23,9 +18,8 @@ namespace MAP {
         passSpeed: number;
         constructor(data: { texture: string, speed: number }, position?: Vector2_p48) {
             super();
-            if(this.id == "027"){//todo delete
-                console.log("027");
-            }
+            this.width = 48;
+            this.height = 48;//todo delete
             if (position) {
                 this.x = position.x;
                 this.y = position.y;
