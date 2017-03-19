@@ -13,6 +13,7 @@
 		"src/platforms/browser/draw.ts",
 		"src/core/ids.ts",
 		"src/core/touch.ts",
-		"src/platforms/browser/driver.ts"
+		"src/platforms/browser/driver.ts",
+		"src/platforms/browser/res.ts"
 	]
 }

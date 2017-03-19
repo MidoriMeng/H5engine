@@ -6,7 +6,7 @@ namespace engine {
         protected _scaleX: number;
         protected _scaleY: number;
         protected _rotate: number;
-
+        protected dirty = true;
         width: number;
         height: number;
         father: IDrawable;
@@ -39,27 +39,37 @@ namespace engine {
         }
 
         set x(value) {
-            this._x = value;
-            this.calculateMat();
+            if (value != this._x) {
+                this._x = value;
+                this.dirty = true;
+            }
         }
         set y(value) {
-            this._y = value;
-            this.calculateMat();
+            if (value != this._y) {
+                this._y = value;
+                this.dirty = true;
+            }
         }
         set scaleX(value) {
-            this._scaleX = value;
-            this.calculateMat();
+            if (value != this._scaleX) {
+                this._scaleX = value;
+                this.dirty = true;
+            }
         }
         set scaleY(value) {
-            this._scaleY = value;
-            this.calculateMat();
+            if (value != this._scaleY) {
+                this._scaleY = value;
+                this.dirty = true;
+            }
         }
         set rotate(value) {
-            this._rotate = value;
-            this.calculateMat();
+            if (value != this._rotate) {
+                this._rotate = value;
+                this.dirty = true;
+            }
         }
 
-        protected calculateMat() {
+        protected calculateLocalMatrix() {
             var transMat = MathUtil.move2Mat(this._x, this._y);
             var rotateMat = MathUtil.rotate2Mat(this.rotate);
             var scaleMat = MathUtil.scale2Mat(this._scaleX, this._scaleY);
@@ -81,6 +91,11 @@ namespace engine {
         }
 
         draw() {
+            //local matrix
+            if (this.dirty)
+                this.calculateLocalMatrix();
+            this.dirty = false;
+            //global matrix
             if (this.father)
                 this.globalMat = this.localMat.multiply(this.father.globalMat);
             else
@@ -115,7 +130,7 @@ namespace engine {
                 localClickMat.data[2][0] = 1;
                 localClickMat = inverseMat.multiply(localClickMat);
                 var localX = localClickMat.data[0][0];
-                var localY= localClickMat.data[1][0];
+                var localY = localClickMat.data[1][0];
                 if (0 < localX &&
                     localX < this.width &&
                     0 < localY &&
@@ -156,14 +171,14 @@ namespace engine {
         endFill() { }
     }
 
-    class ShapeDisplayObject extends DisplayObject {
+    export class ShapeDisplayObject extends DisplayObject {
         draw() {
             super.draw();
             this.color = this.father.color;
         }
     }
 
-    class Rectangle extends ShapeDisplayObject {
+    export class Rectangle extends ShapeDisplayObject {
         x: number;
         y: number;
         width: number;
@@ -201,9 +216,6 @@ namespace engine {
             //generate ID
             this._id = IDs.PICTURE_ID + Bitmap.count;
             Bitmap.count++;
-            if (this._id == "02108") {
-                console.log("hhh");
-            }
 
         }
 
@@ -294,6 +306,7 @@ namespace engine {
 
     export class Shape extends DisplayObjectContainer {
         //private static count = 0;
+        children:ShapeDisplayObject[];
 
         render() {
             this.children.forEach((value) => { value.draw() });
