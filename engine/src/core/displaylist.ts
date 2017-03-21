@@ -9,7 +9,7 @@ namespace engine {
         protected dirty = true;
         width: number;
         height: number;
-        father: IDrawable;
+        parent: IDrawable;
         localMat: MathUtil.Matrix;
         globalMat: MathUtil.Matrix;
         listeners: TouchListener[];
@@ -17,6 +17,7 @@ namespace engine {
         touchEnabled = false;
         alpha = 1;
         color = "#000000";
+        type = "DisplayObject";
 
         get id(): string {
             return this._id;
@@ -90,27 +91,35 @@ namespace engine {
             this.listeners = [];
         }
 
-        draw() {
+        update(chain: any[]) {
             //local matrix
             if (this.dirty)
                 this.calculateLocalMatrix();
             this.dirty = false;
             //global matrix
-            if (this.father)
-                this.globalMat = this.localMat.multiply(this.father.globalMat);
+            if (this.parent)
+                this.globalMat = this.localMat.multiply(this.parent.globalMat);
             else
                 this.globalMat = this.localMat;
+            //add to chain
+            chain.push(this);
+
+            /*
+            //render settings
             var m = this.globalMat.data;
             context2D.setTransform(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
             var alpha = context2D.globalAlpha;
-            context2D.globalAlpha = this.alpha * (this.father ? this.father.alpha : 1);
+            context2D.globalAlpha = this.alpha * (this.parent ? this.parent.alpha : 1);
             var color = context2D.fillStyle;
             context2D.fillStyle = this.color;
 
+            //render
             this.render();
 
             context2D.globalAlpha = alpha;
             context2D.fillStyle = color;
+            */
+            return chain;
         }
 
         addEventListener(type: number, listener: Function, capture?: boolean, priority?: number) {
@@ -121,7 +130,7 @@ namespace engine {
         protected render() { }
 
         hitTest(event: TouchEvent): DisplayObject[] {
-            if (this.touchEnabled || this.father.touchEnabled) {
+            if (this.touchEnabled || this.parent.touchEnabled) {
                 //矩阵逆变换
                 var inverseMat = this.globalMat.inverse();
                 var localClickMat = new MathUtil.Matrix(3, 1);
@@ -156,7 +165,7 @@ namespace engine {
                         var t = (type == "capture") ? value.capture : !value.capture;
                         if (value.type == event.type && t) {
                             //value.obj.func();todo更新func调用
-                            value.func();
+                            value.func(event);
                         }
                     });
                 }
@@ -172,9 +181,11 @@ namespace engine {
     }
 
     export class ShapeDisplayObject extends DisplayObject {
-        draw() {
-            super.draw();
-            this.color = this.father.color;
+
+        update(chain) {
+            super.update(chain);
+            this.color = this.parent.color;
+            return chain;
         }
     }
 
@@ -183,6 +194,7 @@ namespace engine {
         y: number;
         width: number;
         height: number;
+        type = "Rectangle";
 
         render() {
             context2D.fillRect(0, 0, this.width, this.height);
@@ -194,25 +206,31 @@ namespace engine {
         private _width;
         private _height;
         private static count = 0;
-        get width(): number { return this.texture.width; }
-        get height(): number { return this.texture.height; }
+        type = "Bitmap";
+        get width(): number { return this._width; }
+        get height(): number { return this._height; }
         set width(value) {
             if (this.texture) {
                 this.texture.width = value;
-                this._width = value;
             }
+            this._width = value;
         }
 
         set height(value) {
             if (this.texture) {
                 this.texture.height = value;
-                this._height = value;
             }
+            this._height = value;
         }
 
-        constructor(texture?) {
+        constructor(texture?: string | Texture) {
             super(0, 0, 0, 0);
-            this.texture = texture;
+            if (texture instanceof Texture) {
+                this.texture = texture;
+            } else if (texture)
+                this.texture = RES.getRes(texture);
+            this._width = 0;
+            this._height = 0;
             //generate ID
             this._id = IDs.PICTURE_ID + Bitmap.count;
             Bitmap.count++;
@@ -234,6 +252,7 @@ namespace engine {
             super(0, 0, 0, 0);
         }
     }
+
     export class TextField extends DisplayObject {
         // size: number;
         //maxWidth: number;
@@ -241,6 +260,7 @@ namespace engine {
         text: string;
         private static count = 0;
         bold: boolean = false;
+        type = "TextField";
 
         constructor() {
             super(0, 0, 0, 0);
@@ -262,6 +282,7 @@ namespace engine {
     export class DisplayObjectContainer extends DisplayObject {
         children: DisplayObject[] = [];
         private static count = 0;
+        type = "DisplayObjectContainer";
 
         constructor() {
             super(0, 0, 0, 0);
@@ -272,7 +293,11 @@ namespace engine {
 
         addChild(drawable: DisplayObject) {
             this.children.push(drawable);
-            drawable.father = this;
+            drawable.parent = this;
+            if (drawable.x + drawable.width > this.width)
+                this.width = drawable.x + drawable.width;
+            if (drawable.y + drawable.height > this.height)
+                this.height = drawable.y + drawable.height;
         }
 
         removeChild(child: DisplayObject) {
@@ -284,10 +309,12 @@ namespace engine {
             this.children.splice(0);
         }
 
-        render() {
+        update(chain) {
+            super.update(chain);
             this.children.forEach((value) => {
-                value.draw();
+                value.update(chain);
             });
+            return chain;
         }
 
         hitTest(event: TouchEvent): DisplayObject[] {
@@ -306,10 +333,12 @@ namespace engine {
 
     export class Shape extends DisplayObjectContainer {
         //private static count = 0;
-        children:ShapeDisplayObject[];
+        children: ShapeDisplayObject[];
+        type = "Shape";
 
-        render() {
-            this.children.forEach((value) => { value.draw() });
+        update(chain) {
+            super.update(chain);
+            this.children.forEach((value) => { value.update(chain) });
         }
 
         drawRect(x: number, y: number, width: number, height: number) {

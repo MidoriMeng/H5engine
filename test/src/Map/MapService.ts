@@ -12,7 +12,7 @@ namespace MAP {
             //map 01
 
             this.curNPCList = new Array<NPC>();
-            this.addEventListener(engine.TouchEvent.CLICK, this.onTap);
+            this.addEventListener(engine.TouchEvent.CLICK, (e)=>this.onTap(e));
         }
 
         static getInstance(): MapService {

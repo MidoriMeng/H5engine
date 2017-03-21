@@ -58,7 +58,7 @@ class HeroPanel extends engine.DisplayObjectContainer {
             /*e.addEventListener(engine.TouchEvent.CLICK,(evt,context)=>{
                 this.showEquipment(this.hero.equipment[context],evt);
             },this);*/
-            e.addEventListener(engine.TouchEvent.CLICK, this.showDetail, this);
+            e.addEventListener(engine.TouchEvent.CLICK, (e)=>this.showDetail(e), this);
 
         }
 

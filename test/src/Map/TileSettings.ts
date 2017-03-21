@@ -54,8 +54,6 @@ namespace MAP {
     export function generateTile(sceneType: SCENE_TYPE, type: TILE_TYPE, index: number): Tile {
         if (index == -1)
             return new Tile(error);
-        if (type == 1 && index == 0)//todo delete
-            console.log("stop");
         var prefab = MAP.tileJson[sceneType][type][index];
         var result = new Tile(prefab);
         if (result)

@@ -47,14 +47,19 @@ namespace engine {
             var originValue = this.target[attribute];
             var targetValue = toTarget[attribute];
             var speed = (targetValue - originValue) / time;
+            if (time == 0)
+                speed = 0;
+                //注册动画
             var key = setInterval((deltaTime) => {
                 originValue += (speed * deltaTime);
                 this.target[attribute] = originValue;
                 if (this.onChange)
                     this.onChange();
             }, 1000 / FPS);
+            //注册事件取消动画
             setTimeout(() => {
                 Ticker.getInstance().unregister(key);
+                this.target[attribute] = targetValue;
                 if (this.onFinish)
                     this.onFinish();
             }, time);

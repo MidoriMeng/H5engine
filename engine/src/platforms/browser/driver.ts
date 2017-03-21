@@ -9,16 +9,18 @@ namespace engine {
     }
 
     export let run = function (main) {
-       // canvas = document.createElement("canvas") as Canvas;
-       canvas = new Canvas();
+        // canvas = document.createElement("canvas") as Canvas;
+        canvas = new Canvas();
         canvas.data = document.getElementById('app');
         //var objBody = document.getElementsByTagName("body").item(0);
-       // objBody.appendChild(canvas as HTMLCanvasElement);  
+        // objBody.appendChild(canvas as HTMLCanvasElement);  
 
         //canvas = new Canvas();
         stage = main;
         stage.width = canvas.width;
         stage.height = canvas.height;
+
+        //RES.loadConfig(()=>{        })
         stage.createGameScene(canvas);
         context2D = canvas.getContext('2d');
         let lastNow = Date.now();
@@ -30,8 +32,10 @@ namespace engine {
 
             //绘制
             context2D.clearRect(0, 0, canvas.width, canvas.height);
-            stage.draw();
-            
+            var drawChain:DisplayObject[] = [];
+            drawChain = stage.update(drawChain);
+            context2D.draw(drawChain);
+
 
             lastNow = now;
             window.requestAnimationFrame(frameHandler);

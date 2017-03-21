@@ -9,10 +9,11 @@ namespace engine {
         height: number;
         localMat: MathUtil.Matrix;
         globalMat: MathUtil.Matrix;
-        father: IDrawable;
-        draw(context: Context);
+        parent: IDrawable;
+        update(chain:DisplayObject[]):DisplayObject[];
         alpha: number;
         color: string;
+        type:string;
         touchEnabled:boolean;
     }
 
@@ -21,11 +22,12 @@ namespace engine {
         globalAlpha:number;
         fillStyle:string;
         font:string;
-        drawImage(tex:IBitmap,x:number,y:number);
+        drawImage(tex:ITexture,x:number,y:number);
         fillRect(x:number,y:number,width:number,height:number);
         setTransform(a,b,c,d,tx,ty);
         fillText(str:string, x:number, y:number);
         clearRect(x:number,y:number,width:number,height:number);
+        draw(list:DisplayObject[]);
     }
 
     export interface ICanvas{

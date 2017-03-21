@@ -10,8 +10,8 @@ namespace engine {
             this.data.font = value;
         }
 
-        drawImage(tex: IBitmap, x: number, y: number) {
-            this.data.drawImage(tex.texture.data, x, y);
+        drawImage(tex: ITexture, x: number, y: number) {
+            this.data.drawImage(tex.data, x, y);
         }
 
         fillRect(x: number, y: number, width: number, height: number) {
@@ -24,7 +24,42 @@ namespace engine {
             this.data.fillText(str, x, y);
         }
         clearRect(x: number, y: number, width: number, height: number) {
-            this.clearRect(x, y, width, height);
+            this.data.clearRect(x, y, width, height);
+        }
+
+        draw(list: DisplayObject[]) {
+            list.forEach((value) => {
+                //draw settings:matrix, color, alpha...
+                var m = value.globalMat.data;
+                this.setTransform(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
+                var alpha = this.globalAlpha;
+                this.globalAlpha = value.alpha * (value.parent ? value.parent.alpha : 1);
+                var color = this.fillStyle;
+                this.fillStyle = value.color;
+
+                //render
+                switch (value.type) {
+                    case "TextField":
+                        var text = value as TextField;
+                        this.font = (text.bold ? "bold " : "") + text.fontSize + "px Verdana";
+                        this.fillText(text.text, 0, 0);
+                        break;
+                    case "Bitmap":
+                        var bitmap = value as Bitmap;
+                        try {
+                            if (bitmap.texture)
+                                this.drawImage(bitmap.texture, 0, 0);
+                        } catch (e) { }
+                        break;
+                    case "Rectangle":
+                        var rect = value as Rectangle;
+                        this.fillRect(0, 0, rect.width, rect.height);
+                }
+
+                context2D.globalAlpha = alpha;
+                context2D.fillStyle = color;
+
+            })
         }
     }
 
@@ -37,9 +72,11 @@ namespace engine {
             return this.data.height;
         }
         getContext(type: string) {
-            return this.data.getContext('2d');
+            var result = new Context();
+            result.data = this.data.getContext('2d');
+            return result;
         }
     }
 
-    
+
 }

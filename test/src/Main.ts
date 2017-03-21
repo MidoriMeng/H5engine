@@ -75,7 +75,7 @@ class Main extends engine.DisplayObjectContainer implements EventEmitter{
         this.player.setCurHero(this.user.heroes[0]);
         this.player.searchAgent = new AStarSearch(this.mapService.curMap.objGrid,
             this.mapService.curMap.creatureGrid);
-        this.player.addEventListener(engine.TouchEvent.CLICK, this.showHeroPanel);
+        this.player.addEventListener(engine.TouchEvent.CLICK, ()=>this.showHeroPanel());
         this.player.touchEnabled = true;
         //this.player.addObserver(MissionService.getInstance());
         //add other people here
@@ -99,7 +99,7 @@ class Main extends engine.DisplayObjectContainer implements EventEmitter{
         text.text = "auto";
         this.addChild(text);
         text.touchEnabled = true;
-        text.addEventListener(engine.TouchEvent.CLICK, this.autoButton);
+        text.addEventListener(engine.TouchEvent.CLICK, ()=>this.autoButton());
 
 
         this.touchEnabled = true;
@@ -111,7 +111,7 @@ class Main extends engine.DisplayObjectContainer implements EventEmitter{
         this.addChild(MonsterService.getInstance());
         this.addChild(UIService.getInstance());
 
-        this.addEventListener(engine.TouchEvent.CLICK,this.onTap);
+        this.addEventListener(engine.TouchEvent.CLICK,(e)=>this.onTap(e));
 
         //test here
     }
