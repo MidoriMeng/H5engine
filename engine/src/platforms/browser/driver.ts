@@ -9,6 +9,7 @@ namespace engine {
     }
 
     export let run = function (main) {
+
         // canvas = document.createElement("canvas") as Canvas;
         canvas = new Canvas();
         canvas.data = document.getElementById('app');
@@ -20,28 +21,35 @@ namespace engine {
         stage.width = canvas.width;
         stage.height = canvas.height;
 
-        //RES.loadConfig(()=>{        })
-        stage.createGameScene(canvas);
-        context2D = canvas.getContext('2d');
-        let lastNow = Date.now();
-        let frameHandler = () => {
-            //时间
-            let now = Date.now();
-            let deltaTime = now - lastNow;
-            Ticker.getInstance().notify(deltaTime);
+        //读取资源
+        RES.loadConfig(() => {
+            //创建场景
+            stage.createGameScene(canvas);
+            //获取上下文
+            context2D = canvas.getContext('2d');
+            let lastNow = Date.now();
+            //进入主循环
+            let frameHandler = () => {
+                //时间
+                let now = Date.now();
+                let deltaTime = now - lastNow;
+                Ticker.getInstance().notify(deltaTime);
 
-            //绘制
-            context2D.clearRect(0, 0, canvas.width, canvas.height);
-            var drawChain:DisplayObject[] = [];
-            drawChain = stage.update(drawChain);
-            context2D.draw(drawChain);
+                //绘制
+                context2D.clearRect(0, 0, canvas.width, canvas.height);
+                var drawChain: DisplayObject[] = [];
+                drawChain = stage.update(drawChain);
+                context2D.draw(drawChain);
 
 
-            lastNow = now;
+                lastNow = now;
+                window.requestAnimationFrame(frameHandler);
+            }
             window.requestAnimationFrame(frameHandler);
-        }
 
-        window.requestAnimationFrame(frameHandler);
+
+        });
+
 
         //鼠标按下
         window.onmousedown = (down) => {
@@ -68,6 +76,8 @@ namespace engine {
             }
             window.onmouseleave = (leave) => { }
         }
+
+
     }
 
 }

@@ -13,14 +13,12 @@ namespace engine {
         update(chain:DisplayObject[]):DisplayObject[];
         alpha: number;
         color: string;
-        type:string;
+        displayType:string;
         touchEnabled:boolean;
     }
 
     export interface IContext{
         data:any;
-        globalAlpha:number;
-        fillStyle:string;
         font:string;
         drawImage(tex:ITexture,x:number,y:number);
         fillRect(x:number,y:number,width:number,height:number);

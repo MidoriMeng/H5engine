@@ -17,58 +17,9 @@ namespace engine {
         touchEnabled = false;
         alpha = 1;
         color = "#000000";
-        type = "DisplayObject";
+        displayType = "DisplayObject";
 
-        get id(): string {
-            return this._id;
-        }
 
-        get x(): number {
-            return this._x;
-        }
-        get y(): number {
-            return this._y;
-        }
-        get scaleX(): number {
-            return this._scaleX;
-        }
-        get scaleY(): number {
-            return this._scaleY;
-        }
-        get rotate(): number {
-            return this._rotate;
-        }
-
-        set x(value) {
-            if (value != this._x) {
-                this._x = value;
-                this.dirty = true;
-            }
-        }
-        set y(value) {
-            if (value != this._y) {
-                this._y = value;
-                this.dirty = true;
-            }
-        }
-        set scaleX(value) {
-            if (value != this._scaleX) {
-                this._scaleX = value;
-                this.dirty = true;
-            }
-        }
-        set scaleY(value) {
-            if (value != this._scaleY) {
-                this._scaleY = value;
-                this.dirty = true;
-            }
-        }
-        set rotate(value) {
-            if (value != this._rotate) {
-                this._rotate = value;
-                this.dirty = true;
-            }
-        }
 
         protected calculateLocalMatrix() {
             var transMat = MathUtil.move2Mat(this._x, this._y);
@@ -91,7 +42,7 @@ namespace engine {
             this.listeners = [];
         }
 
-        update(chain: any[]) {
+        update(chain: DisplayObject[]): DisplayObject[] {
             //local matrix
             if (this.dirty)
                 this.calculateLocalMatrix();
@@ -178,11 +129,76 @@ namespace engine {
         }
 
         endFill() { }
+
+        get id(): string {
+            return this._id;
+        }
+        get x(): number {
+            return this._x;
+        }
+        get y(): number {
+            return this._y;
+        }
+        get scaleX(): number {
+            return this._scaleX;
+        }
+        get scaleY(): number {
+            return this._scaleY;
+        }
+        get rotate(): number {
+            return this._rotate;
+        }
+        set x(value) {
+            if (value != this._x) {
+                this._x = value;
+                this.dirty = true;
+            }
+        }
+        set y(value) {
+            if (value != this._y) {
+                this._y = value;
+                this.dirty = true;
+            }
+        }
+        set scaleX(value) {
+            if (value != this._scaleX) {
+                this._scaleX = value;
+                this.dirty = true;
+            }
+        }
+        set scaleY(value) {
+            if (value != this._scaleY) {
+                this._scaleY = value;
+                this.dirty = true;
+            }
+        }
+        set rotate(value) {
+            if (value != this._rotate) {
+                this._rotate = value;
+                this.dirty = true;
+            }
+        }
+        /*set height(value) {
+            if (this._height) {
+                this.scaleY = value / this._height * this._scaleY;
+                this._height = value;
+            } else {
+                this._height = value;
+            }
+        }
+        set width(value) {
+            if (this._width) {
+                this.scaleX = value / this._width * this._scaleX;
+            this._width = value;
+            } else {
+                this._width = 0;
+            }
+        }*/
     }
 
     export class ShapeDisplayObject extends DisplayObject {
 
-        update(chain) {
+        update(chain: DisplayObject[]): DisplayObject[] {
             super.update(chain);
             this.color = this.parent.color;
             return chain;
@@ -194,7 +210,7 @@ namespace engine {
         y: number;
         width: number;
         height: number;
-        type = "Rectangle";
+        displayType = "Rectangle";
 
         render() {
             context2D.fillRect(0, 0, this.width, this.height);
@@ -202,25 +218,22 @@ namespace engine {
     }
 
     export class Bitmap extends DisplayObject implements IBitmap {
-        texture;
-        private _width;
-        private _height;
+        _texture: Texture;
+        width: number;
+        height: number;
         private static count = 0;
-        type = "Bitmap";
-        get width(): number { return this._width; }
-        get height(): number { return this._height; }
-        set width(value) {
-            if (this.texture) {
-                this.texture.width = value;
-            }
-            this._width = value;
+        displayType = "Bitmap";
+
+        get texture() {
+            return this._texture;
         }
 
-        set height(value) {
-            if (this.texture) {
-                this.texture.height = value;
+        set texture(value) {
+            this._texture = value;
+            if (value) {
+                this.width = value.width;
+                this.height = value.height;
             }
-            this._height = value;
         }
 
         constructor(texture?: string | Texture) {
@@ -229,8 +242,6 @@ namespace engine {
                 this.texture = texture;
             } else if (texture)
                 this.texture = RES.getRes(texture);
-            this._width = 0;
-            this._height = 0;
             //generate ID
             this._id = IDs.PICTURE_ID + Bitmap.count;
             Bitmap.count++;
@@ -260,7 +271,7 @@ namespace engine {
         text: string;
         private static count = 0;
         bold: boolean = false;
-        type = "TextField";
+        displayType = "TextField";
 
         constructor() {
             super(0, 0, 0, 0);
@@ -282,7 +293,7 @@ namespace engine {
     export class DisplayObjectContainer extends DisplayObject {
         children: DisplayObject[] = [];
         private static count = 0;
-        type = "DisplayObjectContainer";
+        displayType = "DisplayObjectContainer";
 
         constructor() {
             super(0, 0, 0, 0);
@@ -309,7 +320,7 @@ namespace engine {
             this.children.splice(0);
         }
 
-        update(chain) {
+        update(chain: DisplayObject[]): DisplayObject[] {
             super.update(chain);
             this.children.forEach((value) => {
                 value.update(chain);
@@ -334,11 +345,12 @@ namespace engine {
     export class Shape extends DisplayObjectContainer {
         //private static count = 0;
         children: ShapeDisplayObject[];
-        type = "Shape";
+        displayType = "Shape";
 
-        update(chain) {
+        update(chain: DisplayObject[]): DisplayObject[] {
             super.update(chain);
             this.children.forEach((value) => { value.update(chain) });
+            return chain;
         }
 
         drawRect(x: number, y: number, width: number, height: number) {

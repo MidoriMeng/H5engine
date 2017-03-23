@@ -1,8 +1,6 @@
 namespace engine {
     export class Context implements IContext {
         data: CanvasRenderingContext2D;
-        globalAlpha: number;
-        fillStyle: string;
         get font(): string {
             return ""
         }
@@ -32,13 +30,13 @@ namespace engine {
                 //draw settings:matrix, color, alpha...
                 var m = value.globalMat.data;
                 this.setTransform(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
-                var alpha = this.globalAlpha;
-                this.globalAlpha = value.alpha * (value.parent ? value.parent.alpha : 1);
-                var color = this.fillStyle;
-                this.fillStyle = value.color;
+                var alpha = this.data.globalAlpha;
+                this.data.globalAlpha = value.alpha * (value.parent ? value.parent.alpha : 1);
+                var color = this.data.fillStyle;
+                this.data.fillStyle = value.color;
 
                 //render
-                switch (value.type) {
+                switch (value.displayType) {
                     case "TextField":
                         var text = value as TextField;
                         this.font = (text.bold ? "bold " : "") + text.fontSize + "px Verdana";
@@ -56,8 +54,8 @@ namespace engine {
                         this.fillRect(0, 0, rect.width, rect.height);
                 }
 
-                context2D.globalAlpha = alpha;
-                context2D.fillStyle = color;
+                context2D.data.globalAlpha = alpha;
+                context2D.data.fillStyle = color;
 
             })
         }

@@ -18,8 +18,6 @@ namespace MAP {
         passSpeed: number;
         constructor(data: { texture: string, speed: number }, position?: Vector2_p48) {
             super();
-            this.width = 48;
-            this.height = 48;//todo delete
             if (position) {
                 this.x = position.x;
                 this.y = position.y;

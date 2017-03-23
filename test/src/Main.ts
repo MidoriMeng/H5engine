@@ -107,7 +107,7 @@ class Main extends engine.DisplayObjectContainer implements EventEmitter{
 
         this.addChild(this.mapService);
         this.addChild(this.player);
-        this.addChild(this.missionPanel);
+        this.addChild(this.missionPanel);//todo ???为什么会跟着人物动
         this.addChild(MonsterService.getInstance());
         this.addChild(UIService.getInstance());
 

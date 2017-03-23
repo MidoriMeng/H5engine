@@ -30,13 +30,13 @@ class MissionPanel extends engine.DisplayObjectContainer implements Observer {
                 self.missionList.push(missions[index]);
             }
         }
-        self.update();
+        self.updateAll();
     }
 
     addMission(mission: Mission) {
         if (this.missionList.indexOf(mission) < 0) {
             this.missionList.push(mission);
-            this.update();
+            this.updateAll();
         }
         else {
             console.log("mission already in missionPanel");
@@ -48,7 +48,7 @@ class MissionPanel extends engine.DisplayObjectContainer implements Observer {
         var index = this.missionList.indexOf(mission);
         if (index != -1) {
             this.missionList.splice(index, 1);
-            this.update();
+            this.updateAll();
         } else
             console.error("nothing to delete");
     }
@@ -59,13 +59,13 @@ class MissionPanel extends engine.DisplayObjectContainer implements Observer {
         if (newElement && shouldDisplay)
             this.addMission(mission);
         if (shouldDisplay)
-            this.update();
+            this.updateAll();
         else if (!newElement && !shouldDisplay)
             this.deleteMission(mission);
     }
 
     /**sort list and update view */
-    update() {
+    updateAll() {
         //sort
         this.missionList.sort(
             function (a, b) {

@@ -23,166 +23,172 @@ namespace engine {
         }
 
         export function getRes(path: string): Texture {
-            if (path != null) {
-                var result = new Texture();
-                result.data = new Image();
-                result.data.src = RESOURCE_PATH + path;
-                console.log(RESOURCE_PATH + path);
-                return result;
+            var result = preloadedResources.get(path);
+            if (!result) {
+                console.log("wrong path of image: " + path);
+                return null;
             }
-            else
-                console.log("null path");
+
+            result.data = new Image();
+            result.data.src = RESOURCE_PATH + path;
+            return result;
         }
 
         export function loadConfig(onCompleted: Function) {
-            var length = preloadJson.resources.length;
+            var length = preloadJson.images.length;
             preloadedResources = new Map<string, Texture>();
             var completed = 0;
-            preloadJson.resources.forEach((config) => {
-                getResAsync(config.name).then((value) => {
+            //按照json内容生成texture
+            preloadJson.images.forEach((config) => {
+                //生成的texture只有宽高信息，没有data信息
+                var texture = new Texture();
+                texture.width = config.width;
+                texture.height = config.height;
+                preloadedResources.set(config.name, texture);
+                //生成真实texture
+                /*getResAsync(config.name).then((value) => {
                     preloadedResources.set(config.name, value as Texture);
                     completed++;
-                    console.log(completed);
                     if (completed == length)
                         onCompleted();
-                });
+                });*/
             });
-            // return;
+            onCompleted();
         }
 
         var preloadJson = {
-            "resources": [
+            "images": [
                 {
                     "name": "Actor1.jpg",
-                    "type": "image"
+                    "width": 144, "height": 144
                 },
                 {
                     "name": "Actor1_01.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_02.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_03.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "actor1_05.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "actor1_06.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_07.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_08.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_09.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_10.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_11.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_12.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor1_13.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Actor2_1.png",
-                    "type": "image"
+                    "width": 182, "height": 202
                 },
                 {
                     "name": "atk_up.png",
-                    "type": "image"
+                    "width": 32, "height": 32
                 },
                 {
                     "name": "Balloon_exclamation.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Balloon_exclamation_gray.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Balloon_questionMark.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "Balloon_questionMark_gray.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "cloth.png",
-                    "type": "image"
+                    "width": 32, "height": 32
                 },
                 {
                     "name": "empty.png",
-                    "type": "image"
+                    "width": 1, "height": 1
                 },
                 {
                     "name": "emptyEquip.png",
-                    "type": "image"
+                    "width": 32, "height": 32
                 },
                 {
                     "name": "error.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "jewel_blue.png",
-                    "type": "image"
+                    "width": 32, "height": 32
                 },
                 {
                     "name": "jewel_green.png",
-                    "type": "image"
+                    "width": 32, "height": 32
                 },
                 {
                     "name": "mhp_up.png",
-                    "type": "image"
+                    "width": 32, "height": 32
                 },
                 {
                     "name": "outside_bg_grass.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "outside_sc_shrub.png",
-                    "type": "image"
+                    "width": 48, "height": 48
                 },
                 {
                     "name": "skill_blizzard.png",
-                    "type": "image"
+                    "width": 32, "height": 32
                 },
                 {
                     "name": "skill_chop.png",
-                    "type": "image"
+                    "width": 32, "height": 3248
                 },
                 {
                     "name": "Slash.png",
-                    "type": "image"
+                    "width": 121, "height": 132
                 },
                 {
                     "name": "Slime.png",
-                    "type": "image"
+                    "width": 102, "height": 85
                 },
                 {
                     "name": "sword.png",
-                    "type": "image"
+                    "width": 32, "height": 32
                 }
             ]
         }
