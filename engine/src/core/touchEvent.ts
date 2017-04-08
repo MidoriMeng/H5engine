@@ -8,6 +8,10 @@ namespace engine {
         dispatchEvent(type: "capture" | "bubble", chain: DisplayObject[], event: TouchEvent)
     }
 
+    export interface EventEmitter{
+        notify(...a);
+    }
+    
     export class TouchListener {
         type: number;
         func: Function;

@@ -12,7 +12,7 @@
 		"src/core/displaylist.ts",
 		"src/platforms/browser/draw.ts",
 		"src/core/ids.ts",
-		"src/core/touch.ts",
+		"src/core/touchEvent.ts",
 		"src/platforms/browser/driver.ts",
 		"src/platforms/browser/res.ts"
 	]

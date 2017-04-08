@@ -1,0 +1,136 @@
+{
+    "images": [
+                {
+                    "name": "Actor1.jpg",
+                    "width": 144, "height": 144
+                },
+                {
+                    "name": "Actor1_01.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_02.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_03.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "actor1_05.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "actor1_06.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_07.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_08.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_09.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_10.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_11.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_12.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor1_13.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Actor2_1.png",
+                    "width": 182, "height": 202
+                },
+                {
+                    "name": "atk_up.png",
+                    "width": 32, "height": 32
+                },
+                {
+                    "name": "Balloon_exclamation.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Balloon_exclamation_gray.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Balloon_questionMark.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "Balloon_questionMark_gray.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "cloth.png",
+                    "width": 32, "height": 32
+                },
+                {
+                    "name": "empty.png",
+                    "width": 1, "height": 1
+                },
+                {
+                    "name": "emptyEquip.png",
+                    "width": 32, "height": 32
+                },
+                {
+                    "name": "error.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "jewel_blue.png",
+                    "width": 32, "height": 32
+                },
+                {
+                    "name": "jewel_green.png",
+                    "width": 32, "height": 32
+                },
+                {
+                    "name": "mhp_up.png",
+                    "width": 32, "height": 32
+                },
+                {
+                    "name": "outside_bg_grass.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "outside_sc_shrub.png",
+                    "width": 48, "height": 48
+                },
+                {
+                    "name": "skill_blizzard.png",
+                    "width": 32, "height": 32
+                },
+                {
+                    "name": "skill_chop.png",
+                    "width": 32, "height": 3248
+                },
+                {
+                    "name": "Slash.png",
+                    "width": 121, "height": 132
+                },
+                {
+                    "name": "Slime.png",
+                    "width": 102, "height": 85
+                },
+                {
+                    "name": "sword.png",
+                    "width": 32, "height": 32
+                }
+            ]
+}

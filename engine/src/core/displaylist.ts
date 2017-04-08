@@ -81,27 +81,25 @@ namespace engine {
         protected render() { }
 
         hitTest(event: TouchEvent): DisplayObject[] {
-            if (this.touchEnabled || this.parent.touchEnabled) {
-                //矩阵逆变换
-                var inverseMat = this.globalMat.inverse();
-                var localClickMat = new MathUtil.Matrix(3, 1);
-                localClickMat.data[0][0] = event.stageX;
-                localClickMat.data[1][0] = event.stageY;
-                localClickMat.data[2][0] = 1;
-                localClickMat = inverseMat.multiply(localClickMat);
-                var localX = localClickMat.data[0][0];
-                var localY = localClickMat.data[1][0];
-                if (0 < localX &&
-                    localX < this.width &&
-                    0 < localY &&
-                    localY < this.height) {
+            //矩阵逆变换
+            var inverseMat = this.globalMat.inverse();
+            var localClickMat = new MathUtil.Matrix(3, 1);
+            localClickMat.data[0][0] = event.stageX;
+            localClickMat.data[1][0] = event.stageY;
+            localClickMat.data[2][0] = 1;
+            localClickMat = inverseMat.multiply(localClickMat);
+            var localX = localClickMat.data[0][0];
+            var localY = localClickMat.data[1][0];
+            if (0 < localX &&
+                localX < this.width &&
+                0 < localY &&
+                localY < this.height) {
+                event.localX = localX;
+                event.localY = localY;
+                if (this.touchEnabled)
                     event.target = this;
-                    event.localX = localX;
-                    event.localY = localY;
-                    return [this];
-                }
+                return [this];
             }
-            else return null;
         }
 
         dispatchEvent(type: "capture" | "bubble", chain: DisplayObject[], event: TouchEvent) {
@@ -229,6 +227,7 @@ namespace engine {
         }
 
         set texture(value) {
+            // todo 优化加载：等新图片加载完成再更换图片
             this._texture = value;
             if (value) {
                 this.width = value.width;
@@ -238,6 +237,7 @@ namespace engine {
 
         constructor(texture?: string | Texture) {
             super(0, 0, 0, 0);
+            this._texture = null;
             if (texture instanceof Texture) {
                 this.texture = texture;
             } else if (texture)
@@ -299,7 +299,6 @@ namespace engine {
             super(0, 0, 0, 0);
             this._id = IDs.CONTAINER_ID + DisplayObjectContainer.count;
             DisplayObjectContainer.count++;
-            this.touchEnabled = true;
         }
 
         addChild(drawable: DisplayObject) {
@@ -330,11 +329,12 @@ namespace engine {
 
         hitTest(event: TouchEvent): DisplayObject[] {
             var result: DisplayObject[];
-            //执行孩子的检测，储存最后一个（…）碰到的物体
-            for (var i = 0; i < this.children.length; i++) {
+            for (var i = this.children.length - 1; i > -1; i--) {
                 result = this.children[i].hitTest(event);
                 if (result) {
                     result.unshift(this);
+                    if (this.touchEnabled && event.target == null)
+                        event.target = this;
                     return result;
                 }
             }
@@ -366,6 +366,8 @@ namespace engine {
                 if (temp)
                     result = temp;
             })
+            if (this.touchEnabled && event.target == null)
+                event.target = this;
             return result;
         }
     }
