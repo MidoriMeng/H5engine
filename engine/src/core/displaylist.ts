@@ -113,7 +113,6 @@ namespace engine {
                     element.listeners.forEach((value) => {//每个元素派发事件
                         var t = (type == "capture") ? value.capture : !value.capture;
                         if (value.type == event.type && t) {
-                            //value.obj.func();todo更新func调用
                             value.func(event);
                         }
                     });
@@ -227,7 +226,6 @@ namespace engine {
         }
 
         set texture(value) {
-            // todo 优化加载：等新图片加载完成再更换图片
             this._texture = value;
             if (value) {
                 this.width = value.width;
@@ -292,11 +290,15 @@ namespace engine {
 
     export class DisplayObjectContainer extends DisplayObject {
         children: DisplayObject[] = [];
-        private static count = 0;
+        protected static count = 0;
         displayType = "DisplayObjectContainer";
 
         constructor() {
             super(0, 0, 0, 0);
+            this.generateID();
+        }
+
+        protected generateID() {
             this._id = IDs.CONTAINER_ID + DisplayObjectContainer.count;
             DisplayObjectContainer.count++;
         }
@@ -347,28 +349,13 @@ namespace engine {
         children: ShapeDisplayObject[];
         displayType = "Shape";
 
-        update(chain: DisplayObject[]): DisplayObject[] {
-            super.update(chain);
-            this.children.forEach((value) => { value.update(chain) });
-            return chain;
+        protected generateID() {
+            this._id = IDs.SHAPE_ID + Shape.count;
+            Shape.count++;
         }
 
         drawRect(x: number, y: number, width: number, height: number) {
             this.addChild(new Rectangle(x, y, width, height));
-            this.width += width;
-            this.height += height;
-        }
-
-        hitTest(event: TouchEvent): DisplayObject[] {
-            var result;
-            this.children.forEach((value) => {
-                var temp = value.hitTest(event);
-                if (temp)
-                    result = temp;
-            })
-            if (this.touchEnabled && event.target == null)
-                event.target = this;
-            return result;
         }
     }
 }

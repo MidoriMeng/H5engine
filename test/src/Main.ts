@@ -14,7 +14,7 @@ class Main extends engine.DisplayObjectContainer implements EventEmitter{
         super();
     }
 
-    createGameScene(canvas): void {
+    createGameScene(canvas:engine.ICanvas): void {
         //加载命令
         this.commandList = new CommandList();
 
@@ -24,7 +24,7 @@ class Main extends engine.DisplayObjectContainer implements EventEmitter{
         ClickEvent.getInstance().loadCommand(this.commandList);
 
         //加载任务系统
-        var stageW = canvas.Width;
+        var stageW = canvas.width;
         this.missionPanel = new MissionPanel();
         this.missionPanel.x = stageW - this.missionPanel.width;
         MissionService.getInstance().loadMissions();
@@ -108,6 +108,7 @@ class Main extends engine.DisplayObjectContainer implements EventEmitter{
         this.addChild(this.mapService);
         this.addChild(this.player);
         this.addChild(this.missionPanel);//todo ???为什么会跟着人物动
+        console.log(this.missionPanel.id);
         this.addChild(MonsterService.getInstance());
         this.addChild(UIService.getInstance());
 
