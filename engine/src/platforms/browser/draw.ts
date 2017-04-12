@@ -40,7 +40,7 @@ namespace engine {
                     case "TextField":
                         var text = value as TextField;
                         this.font = (text.bold ? "bold " : "") + text.fontSize + "px Verdana";
-                        this.fillText(text.text, 0, 0);
+                        this.fillText(text.text, 0, text.height);
                         break;
                     case "Bitmap":
                         var bitmap = value as Bitmap;

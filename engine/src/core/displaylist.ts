@@ -266,15 +266,22 @@ namespace engine {
         // size: number;
         //maxWidth: number;
         fontSize: number = 15;
-        text: string;
+        private _text: string;
         private static count = 0;
         bold: boolean = false;
         displayType = "TextField";
 
+        get text():string{
+            return this._text;
+        }
+        set text(value:string){
+            this._text = value;
+            this.width = value.length * 10;
+        }
         constructor() {
             super(0, 0, 0, 0);
             this._id = IDs.TEXT_ID + TextField.count;
-            this.height = 20;//todo
+            this.height = 15;//todo
             TextField.count++;
         }
 

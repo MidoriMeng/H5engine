@@ -14,7 +14,7 @@ class MissionPanel extends engine.DisplayObjectContainer implements Observer {
         this.textFieldList = [];
 
         this.bg = new engine.Shape();
-        this.bg.beginFill("#00FF00");
+        //this.bg.beginFill("#00FF00");
         this.bg.drawRect(0, 0, MISSIONPANEL_WIDTH, MISSIONPANEL_HEIGHT);
         this.bg.endFill();
         this.bg.alpha = 0.5;

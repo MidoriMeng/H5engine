@@ -54,6 +54,7 @@ class Dialog extends engine.DisplayObjectContainer {
         this.component = new engine.TextField;
         this.component.text = dialogComponents[this.curIndex];
         this.component.fontSize = DIALOG_SIZE;
+        this.component.color = "#FFFFFF";
         this.component.x = this.speaker.x;
         this.component.y = DIALOG_INTERVAL * 2 + this.speaker.height;
         this.component.width = DIALOG_WIDTH - 3 * DIALOG_INTERVAL - DIALOG_PORTRAIT_SIZE;

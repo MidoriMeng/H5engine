@@ -91,12 +91,14 @@ class Main extends engine.DisplayObjectContainer implements EventEmitter{
         var autoButton = new engine.Shape();
         //autoButton.beginFill(0x000000);
         autoButton.drawRect(200, 600, 80, 35);
+        autoButton.alpha = 0.7;
         //autoButton.endFill();
         this.addChild(autoButton);
         var text = new engine.TextField();
         text.x = 200;
         text.y = 600;
         text.text = "auto";
+        text.color = "#FFFFFF";
         this.addChild(text);
         text.touchEnabled = true;
         text.addEventListener(engine.TouchEvent.CLICK, ()=>this.autoButton());
