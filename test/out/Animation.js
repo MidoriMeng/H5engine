@@ -1,10 +1,7 @@
 class PlayerAnimation {
-    timePassed: number;
-    FPS: number = 24;
-    textureList = [];
-    curFrame: number;
-    self: engine.Bitmap;
-    public constructor(anim: any, self: engine.Bitmap, FPS = 24) {
+    constructor(anim, self, FPS = 24) {
+        this.FPS = 24;
+        this.textureList = [];
         this.textureList = anim;
         this.self = self;
         this.FPS = FPS;
@@ -12,7 +9,7 @@ class PlayerAnimation {
         this.curFrame = 0;
         //    console.log("new animation,"+anim[0]);
     }
-    public playCurcularly(timePassed: number) {
+    playCurcularly(timePassed) {
         this.timePassed += timePassed;
         if (this.timePassed >= 1000 / this.FPS) {
             this.timePassed -= (1000 / this.FPS);
@@ -21,7 +18,7 @@ class PlayerAnimation {
             //    console.log("current frame:"+this.textureList[this.curFrame]);
         }
     }
-    public playOnce(order: string, timePassed: number) {
+    playOnce(order, timePassed) {
         this.timePassed += timePassed;
         if (this.timePassed >= 1000 / this.FPS) {
             this.timePassed -= (1000 / this.FPS);

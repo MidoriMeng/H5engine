@@ -8,15 +8,10 @@ namespace engine {
         stage.dispatchEvent("bubble", clickChain, clickEvent);
     }
 
+    //TODO: main无类型
     export let run = function (main) {
-
-        // canvas = document.createElement("canvas") as Canvas;
         canvas = new Canvas();
         canvas.data = document.getElementById('app');
-        //var objBody = document.getElementsByTagName("body").item(0);
-        // objBody.appendChild(canvas as HTMLCanvasElement);  
-
-        //canvas = new Canvas();
         stage = main;
         stage.width = canvas.width;
         stage.height = canvas.height;

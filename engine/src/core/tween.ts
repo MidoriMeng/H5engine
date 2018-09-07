@@ -12,7 +12,7 @@ namespace engine {
             return Tween.tweens;
         }
         static removeTweens(target: IDrawable): boolean {
-            delete Tween.getTweens().get(target);
+            //delete Tween.getTweens().get(target);
             return Tween.getTweens().delete(target);
         }
 

@@ -1,57 +1,18 @@
 var PLAYER_VELOCITY = 0.2;
-var ANIMATION_FRAMESPEED = 24;//动画播放帧速
-enum DIRECTION {
-    NORTH,
-    SOUTH,
-    WEST,
-    EAST
-}
-
-class Player extends engine.DisplayObjectContainer implements EventEmitter {
-    missionList: IMissionBO[];
-    level = 1;
-    hp = 200;
-    appearance: engine.Bitmap;
-    curAnimation: PlayerAnimation;
-    orientation: DIRECTION;
-    animationList;
-    curState: PLAYER.PlayerState;
-    velocity: number;
-    searchAgent: AStarSearch;
-    observerList: Array<Observer>;
-    private static instance;
-    curHero: Hero;
-    commandList: CommandList;
-
-    static getInstance(): Player {
-        if (Player.instance == null)
-            Player.instance = new Player();
-        return Player.instance;
-    }
-
-    acceptMission(missionID: string) {
-        var mission = MissionService.getInstance().getMissionById(missionID);
-        if (MissionService.getInstance().acceptMission(missionID))
-            this.missionList.push(mission);
-    }
-
-    finishMission(missionID: string) {
-        MissionService.getInstance().submitMission(missionID);
-    }
-
-    addObserver(o: Observer) {
-        this.observerList.push(o);
-        this.notify();
-    }
-
-    notify() {
-        for (var index in this.observerList) {
-            this.observerList[index].onChange(this);
-        }
-    }
-    public constructor() {
+var ANIMATION_FRAMESPEED = 24; //动画播放帧速
+var DIRECTION;
+(function (DIRECTION) {
+    DIRECTION[DIRECTION["NORTH"] = 0] = "NORTH";
+    DIRECTION[DIRECTION["SOUTH"] = 1] = "SOUTH";
+    DIRECTION[DIRECTION["WEST"] = 2] = "WEST";
+    DIRECTION[DIRECTION["EAST"] = 3] = "EAST";
+})(DIRECTION || (DIRECTION = {}));
+class Player extends engine.DisplayObjectContainer {
+    constructor() {
         super();
-        this.velocity = PLAYER_VELOCITY;//pixel per frame
+        this.level = 1;
+        this.hp = 200;
+        this.velocity = PLAYER_VELOCITY; //pixel per frame
         this.curState = new PLAYER.IdleState(this, null);
         this.orientation = DIRECTION.EAST;
         this.missionList = [];
@@ -67,24 +28,42 @@ class Player extends engine.DisplayObjectContainer implements EventEmitter {
             "walk_south": ["Actor1_01.png", "Actor1_02.png", "Actor1_03.png", "Actor1_02.png"]
         };
         this.curAnimation = new PlayerAnimation(this
-            .animationList["idle_east"],
-            this.appearance, ANIMATION_FRAMESPEED);
+            .animationList["idle_east"], this.appearance, ANIMATION_FRAMESPEED);
         //this.observerList = new Array<Observer>();
         this.addChild(this.appearance);
-        this.observerList = new Array<Observer>();
+        this.observerList = new Array();
         this.commandList = new CommandList();
     }
-
-    addCommand(commands: Command[]) {
-        if (commands) {
-            this.commandList.cancel();
-            commands.forEach((value)=>{this.commandList.addCommand(value)});
-            this.commandList.execute();
-
+    static getInstance() {
+        if (Player.instance == null)
+            Player.instance = new Player();
+        return Player.instance;
+    }
+    acceptMission(missionID) {
+        var mission = MissionService.getInstance().getMissionById(missionID);
+        if (MissionService.getInstance().acceptMission(missionID))
+            this.missionList.push(mission);
+    }
+    finishMission(missionID) {
+        MissionService.getInstance().submitMission(missionID);
+    }
+    addObserver(o) {
+        this.observerList.push(o);
+        this.notify();
+    }
+    notify() {
+        for (var index in this.observerList) {
+            this.observerList[index].onChange(this);
         }
     }
-
-    setCurHero(hero: Hero) {
+    addCommand(commands) {
+        if (commands) {
+            this.commandList.cancel();
+            commands.forEach((value) => { this.commandList.addCommand(value); });
+            this.commandList.execute();
+        }
+    }
+    setCurHero(hero) {
         this.curHero = hero;
     }
     /*notify() {
@@ -98,8 +77,7 @@ class Player extends engine.DisplayObjectContainer implements EventEmitter {
         this.observerList.push(observer);
         this.notify();
     }*/
-
-    public Move(stateMachine: GameStateMachine, target: Vector2, callback: Function) {
+    Move(stateMachine, target, callback) {
         //获取vec2_p48格式的当前点、目标点
         var position_48 = new Vector2_p48(0, 0);
         position_48.x = this.x;
@@ -112,64 +90,54 @@ class Player extends engine.DisplayObjectContainer implements EventEmitter {
             target_48.y < MAP.MapService.getInstance().height &&
             target_48.y > 0) {
             //寻路
-            this.searchAgent.setStartNode(position_48.indexX, position_48.indexY);//更新agent start, end node
+            this.searchAgent.setStartNode(position_48.indexX, position_48.indexY); //更新agent start, end node
             this.searchAgent.setEndNode(target_48.indexX, target_48.indexY);
-            var find = this.searchAgent.search();//寻路,建立路径
+            var find = this.searchAgent.search(); //寻路,建立路径
             stateMachine.switchState(this.curState, new PLAYER.WalkState(this, callback));
-        } else
+        }
+        else
             console.log("can't walk there");
     }
-
-    updateOrientation(target: Vector2) {
+    updateOrientation(target) {
         if (target.x - this.x > 0) {
             this.orientation = DIRECTION.EAST;
             this.curAnimation = new PlayerAnimation(this
-                .animationList["idle_east"],
-                this.appearance, ANIMATION_FRAMESPEED);
+                .animationList["idle_east"], this.appearance, ANIMATION_FRAMESPEED);
         }
         else if (target.x - this.x < 0) {
             this.orientation = DIRECTION.WEST;
             this.curAnimation = new PlayerAnimation(this
-                .animationList["idle_west"],
-                this.appearance, ANIMATION_FRAMESPEED);
+                .animationList["idle_west"], this.appearance, ANIMATION_FRAMESPEED);
         }
         if (target.y - this.y > 0) {
             this.orientation = DIRECTION.SOUTH;
             this.curAnimation = new PlayerAnimation(this
-                .animationList["idle_south"],
-                this.appearance, ANIMATION_FRAMESPEED);
+                .animationList["idle_south"], this.appearance, ANIMATION_FRAMESPEED);
         }
         else if (target.y - this.y < 0) {
             this.orientation = DIRECTION.NORTH;
             this.curAnimation = new PlayerAnimation(this
-                .animationList["idle_north"],
-                this.appearance, ANIMATION_FRAMESPEED);
+                .animationList["idle_north"], this.appearance, ANIMATION_FRAMESPEED);
         }
     }
-
     updateWalkAnimationClip() {
         switch (this.orientation) {
             case DIRECTION.NORTH:
                 this.curAnimation = new PlayerAnimation(this
-                    .animationList["walk_north"],
-                    this.appearance, ANIMATION_FRAMESPEED);
+                    .animationList["walk_north"], this.appearance, ANIMATION_FRAMESPEED);
                 break;
             case DIRECTION.EAST:
                 this.curAnimation = new PlayerAnimation(this
-                    .animationList["walk_east"],
-                    this.appearance, ANIMATION_FRAMESPEED);
+                    .animationList["walk_east"], this.appearance, ANIMATION_FRAMESPEED);
                 break;
             case DIRECTION.SOUTH:
                 this.curAnimation = new PlayerAnimation(this
-                    .animationList["walk_south"],
-                    this.appearance, ANIMATION_FRAMESPEED);
+                    .animationList["walk_south"], this.appearance, ANIMATION_FRAMESPEED);
                 break;
             case DIRECTION.WEST:
                 this.curAnimation = new PlayerAnimation(this
-                    .animationList["walk_west"],
-                    this.appearance, ANIMATION_FRAMESPEED);
+                    .animationList["walk_west"], this.appearance, ANIMATION_FRAMESPEED);
                 break;
         }
     }
-
 }

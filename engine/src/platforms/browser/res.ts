@@ -59,7 +59,6 @@ namespace engine {
         }
 
         export function loadConfig(onCompleted: Function) {
-            type a = {};
             loadJSON("././Resources/resources.json", (obj) => { 
                 var loadedObj = obj as preloadJsonType;
                 var length = loadedObj.images.length;
